@@ -1,0 +1,41 @@
+<html lang="en" exportable>
+  <head exportable>
+    <meta charset="UTF-8" exportable/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" exportable/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" exportable/>
+    <style>
+      .selected {
+        outline: #82c7ff solid 1px !important;
+        border: 1px solid #3aa7ff !important;
+      }
+    </style>
+    <script exportable>
+      const libs = {};
+      window.import = (src, accessor) => {
+        if ((script = document.querySelector(`script[src="${src}"]`))) {
+          if (libs[src]) return accessor ? window[accessor] : undefined;
+          else
+            return new Promise((resolve) => {
+              script.addEventListener("load", () => {
+                if (accessor) return resolve(window[accessor]);
+                else return resolve();
+              });
+            });
+        }
+        const lib = document.createElement("script");
+        lib.src = src;
+        lib.setAttribute("defer", "true");
+        document.head.appendChild(lib);
+        return new Promise((resolve) => {
+          lib.onload = () => {
+            libs[src] = true;
+            if (accessor) return resolve(window[accessor]);
+            else return resolve();
+          };
+        });
+      };
+    </script>
+    <title exportable>Document</title>
+  </head>
+  <body exportable></body>
+</html>

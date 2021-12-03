@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script>
+        const libs = {};
+        window.import = (src, accessor) => {
+            if ((script = document.querySelector(`script[src="${src}"]`))) {
+                if (libs[src]) return accessor ? window[accessor] : undefined;
+                else
+                    return new Promise((resolve) => {
+                        script.addEventListener("load", () => {
+                            if (accessor) return resolve(window[accessor]);
+                            else return resolve();
+                        });
+                    });
+            }
+            const lib = document.createElement("script");
+            lib.src = src;
+            lib.setAttribute("defer", "true");
+            document.head.appendChild(lib);
+            return new Promise((resolve) => {
+                lib.onload = () => {
+                    libs[src] = true;
+                    if (accessor) return resolve(window[accessor]);
+                    else return resolve();
+                };
+            });
+        };
+    </script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div editable="true" class=""
+        style="position: absolute; width: 300px; height: 300px; border: 1px solid black; left: 50%; top: 109px; transform: translate(-50%);">
+    </div>
+    <script src="/plugin.js" id="151201b1-30cf-4b00-ba6b-6e95dab0e9e9"
+        style="position: absolute; left: 50%; top: 174px; transform: translate(-50%);"></script>
+    <script src="/plugin.js" id="13df5f1a-dd7e-4faf-baff-377feb20142e"
+        style="position: absolute; left: 50%; top: 241px; transform: translate(-50%);"></script>
+</body>

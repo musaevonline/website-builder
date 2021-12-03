@@ -13,7 +13,7 @@ import xml from 'highlight.js/lib/languages/xml';
 import 'highlight.js/styles/github.css';
 import { html_beautify as htmlBeautify } from 'js-beautify'
 import { cssStyles } from './styles'
-
+import { v4 as uuid } from 'uuid'
 hljs.registerLanguage('xml', xml);
 
 const ExportButton = styled(Fab)({
@@ -59,9 +59,9 @@ function StyleField({ onAddStyle, styles }) {
           <Grid container>
             <Grid item xs={6}>
               <Field name="name" as={Autocomplete} options={cssStyles} disableClearable freeSolo
-                renderInput={(params) => <TextField {...params} label="Style" variant="standard"/>}
+                renderInput={(params) => <TextField {...params} label="Style" variant="standard" />}
                 onChange={(e, value) => setFieldValue("name", value)}
-                 />
+              />
             </Grid>
             <Grid item xs={6}>
               <Field name="value" as={TextField} variant="standard" label="Value" />
@@ -86,69 +86,80 @@ function App() {
 
   const handleContextMenu = (event) => {
     event.preventDefault();
+    console.log(event)
     setContextMenu({
-      mouseX: event.clientX - 2,
-      mouseY: event.clientY - 4,
+      mouseX: event.clientX,
+      mouseY: event.clientY,
     });
   };
 
+  const getEditor = () => document.querySelector('#main').contentDocument
   const forceUpdate = useForceUpdate()
   const addStyleToSelected = ({ name, value }) => {
     if (!selected && !getComputedStyle(selected)[name]) return;
     selected.style[name] = value;
+    const scriptID = selected.getAttribute('script-id')
+    if (scriptID) {
+      const script = getEditor().getElementById(scriptID)
+      script.style[name] = value;
+    }
     forceUpdate()
     return !!getComputedStyle(selected)[name];
   }
 
   const exportCode = () => {
+    const parser = document.createElement("html");
+    parser.innerHTML = getEditor().documentElement.outerHTML
+    parser.querySelectorAll(':not([exportable])').forEach(el => el.remove())
+    parser.querySelectorAll('[exportable]').forEach(el => el.removeAttribute('exportable'))
+    parser.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'))
+    parser.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'))
+    const exportedCode = `<!DOCTYPE html>${parser.innerHTML}`
     setExportedCode(hljs.highlight(
-      htmlBeautify(document.querySelector('#main').innerHTML, {
+      htmlBeautify(exportedCode, {
         wrap_line_length: 120
       }),
       { language: 'xml' }).value
     )
   }
   useEffect(() => {
-    document.querySelector('#main').oncontextmenu = handleContextMenu;
+    getEditor().body.oncontextmenu = handleContextMenu;
     let el = null
-    window.onmousedown = (e) => {
+    document.querySelector('#main').contentWindow.onmousedown = (e) => {
       const { target, offsetX, offsetY } = e;
-      console.log(target)
-      el = {
-        target,
-        offsetX,
-        offsetY,
-      }
-
-      if (target.hasAttribute('editable')) {
+      const maintarget = e.path.find(c => c.hasAttribute && c.hasAttribute('editable'))
+      if (maintarget) {
+        el = {
+          target: maintarget,
+          offsetX,
+          offsetY,
+        }
         if (selected) {
-          selected.style.outline = 'none';
-          selected.style.border = '1px solid black';
+          selected.classList.remove('selected')
         }
-        setSelected(target)
-        target.style.outline = '#82c7ff solid 1px'
-        target.style.border = '1px solid #3aa7ff'
-      } else if (selected && target === document.querySelector('#main')) {
-        if (selected.nodeName === 'SPAN') {
-          selected.style.outline = 'none';
-          selected.style.border = 'none';
-        } else if (selected.nodeName === 'DIV') {
-          selected.style.outline = 'none';
-          selected.style.border = '1px solid black';
-        }
+        maintarget.classList.add('selected')
+        setSelected(maintarget)
+      } else if (selected && target === getEditor().body) {
+        selected.classList.remove('selected')
         setSelected(null)
       }
     };
-    window.onmouseup = () => {
+    document.querySelector('#main').contentWindow.onmouseup = () => {
+      const scriptID = selected && selected.getAttribute('script-id')
+      if (scriptID) {
+        const script = getEditor().getElementById(scriptID)
+        script.style.left = selected.offsetLeft + 'px'
+        script.style.top = selected.offsetTop + 'px'
+      }
       el = null
       forceUpdate()
     };
-    window.onmousemove = (e) => {
+    document.querySelector('#main').contentWindow.onmousemove = (e) => {
       const { target, offsetX, offsetY } = el || {};
-      if (target && target.hasAttribute('editable')) {
+      if (target) {
         e.preventDefault();
         const { pageX, pageY } = e;
-        target.style.left = pageX - document.querySelector('#main').offsetLeft - offsetX + 'px'
+        target.style.left = pageX - offsetX + 'px'
         target.style.top = pageY - offsetY + 'px'
       }
     }
@@ -165,10 +176,11 @@ function App() {
     el.style.width = "300px";
     el.style.height = "300px";
     el.style.border = "1px solid black";
-    el.style.left = `${mouseX - main.current.offsetLeft}px`;
+    el.style.left = `${mouseX - getEditor().body.offsetLeft}px`;
     el.style.top = `${mouseY}px`;
     el.setAttribute('editable', 'true');
-    main.current.appendChild(el);
+    el.setAttribute('exportable', 'true');
+    getEditor().body.appendChild(el);
     setContextMenu(null)
   }
 
@@ -176,26 +188,39 @@ function App() {
     const { mouseX, mouseY } = contextMenu
     const el = document.createElement("span");
     el.style.position = "absolute";
-    el.style.left = `${mouseX - main.current.offsetLeft}px`;
+    el.style.left = `${mouseX - getEditor().body.offsetLeft}px`;
     el.style.top = `${mouseY}px`;
-    el.style.userSelect = 'none';
     el.innerText = 'Hello, world'
     el.setAttribute('editable', 'true');
+    el.setAttribute('exportable', 'true');
     el.setAttribute('contenteditable', 'true');
-    main.current.appendChild(el);
+    getEditor().body.appendChild(el);
+    setContextMenu(null)
+  }
+
+  const newPlugin = () => {
+    const { mouseX, mouseY } = contextMenu
+    const el = document.createElement("script");
+    el.style.position = "absolute";
+    el.style.left = `${mouseX - getEditor().body.offsetLeft}px`;
+    el.style.top = `${mouseY}px`;
+    el.setAttribute('exportable', 'true');
+    el.setAttribute('src', '/plugin.js');
+    el.setAttribute('id', uuid());
+    getEditor().body.appendChild(el);
     setContextMenu(null)
   }
 
   const main = useRef();
   return (
-    <Grid container>
+    <Grid container sx={{ height: '100vh' }}>
       <Grid item xs={3}>
         <Box height="50vh" sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           <StyleField onAddStyle={addStyleToSelected} styles={styles || []}></StyleField>
         </Box>
       </Grid>
       <Grid item xs={9}>
-        <Box style={{ position: "relative" }} height="100vh" ref={main} id="main"></Box>
+        <iframe src="/startmain.html" width="100%" height="100%" ref={main} title="main" id="main"></iframe>
       </Grid>
       <ExportButton color="primary" onClick={exportCode}>
         <SaveIcon />
@@ -213,13 +238,14 @@ function App() {
         anchorReference="anchorPosition"
         anchorPosition={
           contextMenu !== null
-            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+            ? { top: contextMenu.mouseY, left: contextMenu.mouseX + document.querySelector('#main').offsetLeft }
             : undefined
         }
       >
         <NestedMenuItem label="Insert" parentMenuOpen={!!contextMenu}>
           <MenuItem onClick={newDiv}>Block</MenuItem>
           <MenuItem onClick={newSpan}>Text</MenuItem>
+          <MenuItem onClick={newPlugin}>Plugin</MenuItem>
         </NestedMenuItem>
       </Menu>
     </Grid >

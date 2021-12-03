@@ -10,6 +10,7 @@ export const cssStyles = [
     "right",
     "scale",
     "width",
+    "border",
     "bottom",
     "cursor",
     "filter",
