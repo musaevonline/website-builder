@@ -5,41 +5,31 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script>
-        const libs = {};
-        window.import = (src, accessor) => {
-            if ((script = document.querySelector(`script[src="${src}"]`))) {
-                if (libs[src]) return accessor ? window[accessor] : undefined;
-                else
-                    return new Promise((resolve) => {
-                        script.addEventListener("load", () => {
-                            if (accessor) return resolve(window[accessor]);
-                            else return resolve();
-                        });
-                    });
-            }
-            const lib = document.createElement("script");
-            lib.src = src;
-            lib.setAttribute("defer", "true");
-            document.head.appendChild(lib);
-            return new Promise((resolve) => {
-                lib.onload = () => {
-                    libs[src] = true;
-                    if (accessor) return resolve(window[accessor]);
-                    else return resolve();
-                };
-            });
-        };
+    <script defer="">
+        window.attachToEditor = (el, god) => {
+            el.style = god.getAttribute('style');
+            el.setAttribute('editable', 'true');
+            el.setAttribute('script-id', god.getAttribute('id'));
+        }
     </script>
+    <script defer="" src="/plugins/vendors.js"></script>
     <title>Document</title>
 </head>
 
 <body>
+
+    <script src="plugins/MaterialUI@Button.js" defer="true" id="6f89c789-6f47-4530-af63-f9606fe45142"
+        style="position: absolute; left: 337px; top: 433px; width: 150px;"></script>
+    <script src="plugins/MaterialUI@TextField.js" defer="true" id="8e6ace47-89f4-4595-92e5-1f327ea501ed"
+        style="position: absolute; left: 261px; top: 220px;"></script>
+    <script src="plugins/MaterialUI@TextField.js" defer="true" id="470c9b49-18a4-4015-b727-c436e2e15ef7"
+        style="position: absolute; left: 261px; top: 292px;"></script>
+    <script src="plugins/MaterialUI@TimePicker.js" defer="true" id="491daba4-29a0-4aa4-9912-6b62abdd0b71"
+        style="position: absolute; left: 245px; top: 359px;"></script><span editable="true"
+        style="position: absolute; left: 196px; top: 240px;" class="">Login</span><span editable="true"
+        style="position: absolute; left: 181px; top: 306px;" class="">Password</span><span editable="true"
+        style="position: absolute; left: 186px; top: 382px;" class="">Time</span>
     <div editable="true" class=""
-        style="position: absolute; width: 300px; height: 300px; border: 1px solid black; left: 50%; top: 109px; transform: translate(-50%);">
+        style="position: absolute; width: 500px; height: 300px; border: 1px solid black; left: 110px; top: 196px;">
     </div>
-    <script src="/plugin.js" id="151201b1-30cf-4b00-ba6b-6e95dab0e9e9"
-        style="position: absolute; left: 50%; top: 174px; transform: translate(-50%);"></script>
-    <script src="/plugin.js" id="13df5f1a-dd7e-4faf-baff-377feb20142e"
-        style="position: absolute; left: 50%; top: 241px; transform: translate(-50%);"></script>
 </body>

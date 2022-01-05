@@ -198,14 +198,15 @@ function App() {
     setContextMenu(null)
   }
 
-  const newPlugin = () => {
+  const newPlugin = (src) => {
     const { mouseX, mouseY } = contextMenu
     const el = document.createElement("script");
     el.style.position = "absolute";
     el.style.left = `${mouseX - getEditor().body.offsetLeft}px`;
     el.style.top = `${mouseY}px`;
     el.setAttribute('exportable', 'true');
-    el.setAttribute('src', '/plugin.js');
+    el.setAttribute('src', src);
+    el.setAttribute('defer', "true");
     el.setAttribute('id', uuid());
     getEditor().body.appendChild(el);
     setContextMenu(null)
@@ -245,7 +246,9 @@ function App() {
         <NestedMenuItem label="Insert" parentMenuOpen={!!contextMenu}>
           <MenuItem onClick={newDiv}>Block</MenuItem>
           <MenuItem onClick={newSpan}>Text</MenuItem>
-          <MenuItem onClick={newPlugin}>Plugin</MenuItem>
+          {Object.entries(window.plugins).map(([plugin, src]) => 
+            <MenuItem key={plugin} onClick={() => newPlugin(src)}>{plugin}</MenuItem>
+          )}
         </NestedMenuItem>
       </Menu>
     </Grid >
