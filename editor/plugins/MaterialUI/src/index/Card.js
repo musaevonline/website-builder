@@ -7,9 +7,16 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-const currentScript = document.currentScript;
+const SCRIPT = document.currentScript
+const scriptID = SCRIPT.getAttribute('id')
+const {x, y} = window.scripts[scriptID]
+
 const el = document.createElement("div");
-window.attachToEditor(el, currentScript);
+el.style.position = 'absolute'
+el.style.left = x + 'px'
+el.style.top = y + 'px'
+el.setAttribute('editable', 'true');
+el.setAttribute('script-id', scriptID);
 document.body.appendChild(el);
 
 const bull = (
