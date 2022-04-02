@@ -3,11 +3,10 @@ import ReactDOM from "react-dom";
 import { TextField } from "@mui/material";
 import { TimePicker, LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-const currentScript = document.currentScript;
 
-const el = document.createElement("div");
-window.attachToEditor(el, currentScript);
-document.body.appendChild(el);
+const SCRIPT = document.currentScript
+const SCRIPT_ID = SCRIPT.getAttribute('id')
+const { template } = window.SCRIPTS[SCRIPT_ID]
 
 const Component = () => {
   const [value, setValue] = React.useState(null);
@@ -24,4 +23,4 @@ const Component = () => {
     </LocalizationProvider>
   );
 };
-ReactDOM.render(<Component />, el);
+ReactDOM.render(<Component />, template);

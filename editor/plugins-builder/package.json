@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "MaterialUI": "file:../plugins/MaterialUI",
+    "globby": "^11.1.0",
     "html-webpack-plugin": "^4.5.2",
     "html-webpack-skip-assets-plugin": "^1.0.3",
     "webpack": "^4.46.0",
@@ -20,6 +21,7 @@
     "wrapper-webpack-plugin": "^2.1.0"
   },
   "devDependencies": {
+    "copy-webpack-plugin": "^6.0.0",
     "html-webpack-plugin-fix2": "^5.7.0"
   }
 }

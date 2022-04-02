@@ -25,15 +25,7 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <script>
-        window.plugins = JSON.parse(`<%= JSON.stringify(
-        htmlWebpackPlugin.files.js
-        .filter(file => file !== "plugins/vendors.js")
-        .map(file => decodeURIComponent(file))
-        .reduce((acc, file) => Object.assign(acc, 
-                { [file.split('/').pop().replace('.js', '')]: file }
-                ), {}
-            )
-        )%>`)
+        window.plugins = JSON.parse(`<%= JSON.stringify(plugins)%>`)
     </script>
     <title>React App</title>
   </head>

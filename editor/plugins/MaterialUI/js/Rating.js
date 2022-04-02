@@ -3,10 +3,9 @@ import ReactDOM from "react-dom";
 import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
 
-const currentScript = document.currentScript;
-const el = document.createElement("div");
-window.attachToEditor(el, currentScript);
-document.body.appendChild(el);
+const SCRIPT = document.currentScript
+const SCRIPT_ID = SCRIPT.getAttribute('id')
+const { template } = window.SCRIPTS[SCRIPT_ID]
 
 export default function BasicRating() {
   const [value, setValue] = React.useState(2);
@@ -28,4 +27,4 @@ export default function BasicRating() {
   );
 }
 
-ReactDOM.render(<BasicRating />, el);
+ReactDOM.render(<BasicRating />, template);

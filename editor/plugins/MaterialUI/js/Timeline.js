@@ -9,10 +9,9 @@ import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import TimelineDot from '@mui/lab/TimelineDot';
 import Typography from '@mui/material/Typography';
 
-const currentScript = document.currentScript;
-const el = document.createElement("div");
-window.attachToEditor(el, currentScript);
-document.body.appendChild(el);
+const SCRIPT = document.currentScript
+const SCRIPT_ID = SCRIPT.getAttribute('id')
+const { template } = window.SCRIPTS[SCRIPT_ID]
 
 function CustomizedTimeline() {
   return (
@@ -92,4 +91,4 @@ function CustomizedTimeline() {
   );
 }
 
-ReactDOM.render(<CustomizedTimeline />, el);
+ReactDOM.render(<CustomizedTimeline />, template);

@@ -141,58 +141,40 @@ function App() {
       vendors.setAttribute('exportable', 'true')
       vendors.setAttribute('defer', 'true')
       getEditorDocument().head.appendChild(vendors)
-      getEditorWindow().scripts = {}
+      getEditorWindow().SCRIPTS = {}
     };
   }, [forceUpdate, selected, hovered]);
 
-
-  const newDiv = () => {
-    const { mouseX, mouseY } = contextMenu;
-    const el = document.createElement("div");
-    el.style.position = "absolute";
-    el.style.width = "300px";
-    el.style.height = "300px";
-    el.style.border = "1px solid black";
-    el.style.left = `${mouseX - getEditorDocument().body.offsetLeft}px`;
-    el.style.top = `${mouseY + getEditorWindow().scrollY}px`;
-    el.setAttribute("editable", "true");
-    el.setAttribute("exportable", "true");
-    getEditorDocument().head.appendChild(el);
-    setContextMenu(null);
-  };
-
-
-  const newSpan = () => {
-    const { mouseX, mouseY } = contextMenu;
-    const el = document.createElement("span");
-    el.style.position = "absolute";
-    el.style.left = `${mouseX - getEditorDocument().body.offsetLeft}px`;
-    el.style.top = `${mouseY + getEditorWindow().scrollY}px`;
-    el.innerText = "Hello, world";
-    el.setAttribute("editable", "true");
-    el.setAttribute("exportable", "true");
-    el.setAttribute("contenteditable", "true");
-    getEditorDocument().head.appendChild(el);
-    setContextMenu(null);
-    console.log(el.style.left, el.style.top)
-  };
-
-
-  const newPlugin = (src) => {
-    const { mouseX, mouseY } = contextMenu;
-    const x = mouseX - getEditorDocument().body.offsetLeft;
-    const y = mouseY + getEditorWindow().scrollY;
-    const el = document.createElement("script");
-    const id = uuid()
-    el.setAttribute("exportable", "true");
-    el.setAttribute("src", '/' + src);
-    el.setAttribute("defer", "true");
-    el.setAttribute("id", id);
-    getEditorWindow().scripts[id] = {
-      x,
-      y
+  const newPlugin = async (plugin) => {
+    const { script: scriptSrc, template: templateSrc } = plugin
+    let template = null;
+    if (templateSrc) {
+      const html = await fetch(templateSrc).then(res => res.text())
+      const { mouseX, mouseY } = contextMenu;
+      const x = mouseX - getEditorDocument().body.offsetLeft;
+      const y = mouseY + getEditorWindow().scrollY;
+      const parser = new DOMParser()
+      const root = parser.parseFromString(html, 'text/html')
+        .getRootNode().body.firstElementChild
+      root.setAttribute('editable', 'true');
+      root.style.position = 'absolute'
+      root.style.left = x + 'px'
+      root.style.top = y + 'px'
+      getEditorDocument().body.appendChild(root);
+      template = root;
     }
-    getEditorDocument().head.appendChild(el);
+    if (scriptSrc) {
+      const id = uuid()
+      const el = document.createElement("script");
+      el.setAttribute("src", scriptSrc);
+      el.setAttribute("defer", "true");
+      el.setAttribute("id", id);
+      el.setAttribute("exportable", "true");
+      getEditorWindow().SCRIPTS[id] = {
+        template
+      }
+      getEditorDocument().head.appendChild(el);
+    }
     setContextMenu(null);
   };
 
@@ -254,11 +236,9 @@ function App() {
         }
       >
         <NestedMenuItem label="Insert" parentMenuOpen={!!contextMenu}>
-          <MenuItem onClick={newDiv}>Block</MenuItem>
-          <MenuItem onClick={newSpan}>Text</MenuItem>
-          {Object.entries(window.plugins).map(([plugin, src]) => (
-            <MenuItem key={plugin} onClick={() => newPlugin(src)}>
-              {plugin}
+          {Object.entries(window.plugins).map(([pluginName, plugin]) => (
+            <MenuItem key={pluginName} onClick={() => newPlugin(plugin)}>
+              {pluginName}
             </MenuItem>
           ))}
         </NestedMenuItem>

@@ -9,10 +9,9 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
-const currentScript = document.currentScript;
-const el = document.createElement("div");
-window.attachToEditor(el, currentScript);
-document.body.appendChild(el);
+const SCRIPT = document.currentScript
+const SCRIPT_ID = SCRIPT.getAttribute('id')
+const { template } = window.SCRIPTS[SCRIPT_ID]
 
 const steps = [
   {
@@ -100,4 +99,4 @@ export default function VerticalLinearStepper() {
   );
 }
 
-ReactDOM.render(<VerticalLinearStepper />, el);
+ReactDOM.render(<VerticalLinearStepper />, template);

@@ -8,16 +8,8 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 const SCRIPT = document.currentScript
-const scriptID = SCRIPT.getAttribute('id')
-const {x, y} = window.scripts[scriptID]
-
-const el = document.createElement("div");
-el.style.position = 'absolute'
-el.style.left = x + 'px'
-el.style.top = y + 'px'
-el.setAttribute('editable', 'true');
-el.setAttribute('script-id', scriptID);
-document.body.appendChild(el);
+const SCRIPT_ID = SCRIPT.getAttribute('id')
+const { template } = window.SCRIPTS[SCRIPT_ID]
 
 const bull = (
   <Box
@@ -54,4 +46,4 @@ export default function BasicCard() {
   );
 }
 
-ReactDOM.render(<BasicCard />, el);
+ReactDOM.render(<BasicCard />, template);
