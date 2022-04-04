@@ -143,8 +143,7 @@ function App() {
       vendors.setAttribute('defer', 'true')
       getEditorDocument().head.appendChild(vendors)
       getEditorWindow().TEMPLATES = {}
-      getEditorWindow().ACTIONS = {}
-      getEditorWindow().GLOBAL = {}
+      getEditorWindow().STORE = {}
     };
   }, [forceUpdate, selected, hovered]);
 
@@ -161,7 +160,6 @@ function App() {
       const root = parser.parseFromString(html, 'text/html')
         .getRootNode().body.firstElementChild
       root.setAttribute('editable', 'true');
-      root.setAttribute('script-id', id);
       root.style.position = 'absolute'
       root.style.left = x + 'px'
       root.style.top = y + 'px'
@@ -174,8 +172,8 @@ function App() {
       el.setAttribute("defer", "true");
       el.setAttribute("id", id);
       el.setAttribute("exportable", "true");
+      template.setAttribute('script-id', id);
       getEditorWindow().TEMPLATES[id] = template;
-      getEditorWindow().ACTIONS[id] = {};
       getEditorDocument().head.appendChild(el);
     }
     setContextMenu(null);
@@ -191,11 +189,9 @@ function App() {
       return { name: name.trim(), value: value.trim() };
     });
 
-  const props = selectedScriptID && getEditorWindow().STORE.getState()[selectedScriptID]
-  const availableProps = selectedScriptID && Object.keys(getEditorWindow().ACTIONS[selectedScriptID])
-  const onDispatch = ({prop, value}) => {
-    const action = getEditorWindow().ACTIONS[selectedScriptID][prop]
-    getEditorWindow().STORE.dispatch(action(value));
+  const props = selectedScriptID && getEditorWindow().STORE[selectedScriptID]
+  const onSave = ({ key, value }) => {
+    getEditorWindow().STORE[selectedScriptID][key] = value;
     forceUpdate();
     return true;
   }
@@ -213,8 +209,7 @@ function App() {
             styles={styles || []}
           />
           <PropsField
-            onDispatch={onDispatch}
-            availableProps={availableProps || []}
+            onSave={onSave}
             props={props || []}
           />
         </Box>
