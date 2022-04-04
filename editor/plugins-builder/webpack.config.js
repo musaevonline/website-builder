@@ -61,7 +61,7 @@ console.log(plugins);
 
 module.exports = (env = {}) => {
   return {
-    mode: "production",
+    mode: "development",
     entry,
     output: {
       path: path.resolve(__dirname, "../public"),

@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "MaterialUI": "file:../plugins/MaterialUI",
+    "Redux": "file:../plugins/Redux",
     "globby": "^11.1.0",
     "html-webpack-plugin": "^4.5.2",
     "html-webpack-skip-assets-plugin": "^1.0.3",

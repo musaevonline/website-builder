@@ -145,7 +145,7 @@ function App() {
     };
   }, [forceUpdate, selected, hovered]);
 
-  const newPlugin = async (plugin) => {
+  const newPlugin = async (plugin, initId) => {
     const { script: scriptSrc, template: templateSrc } = plugin
     let template = null;
     if (templateSrc) {
@@ -164,14 +164,21 @@ function App() {
       template = root;
     }
     if (scriptSrc) {
-      const id = uuid()
+      const id = initId || uuid()
       const el = document.createElement("script");
       el.setAttribute("src", scriptSrc);
       el.setAttribute("defer", "true");
       el.setAttribute("id", id);
       el.setAttribute("exportable", "true");
       getEditorWindow().SCRIPTS[id] = {
-        template
+        template,
+        reset() {
+          el.remove();
+          if (template) {
+            template.remove()
+          }
+          newPlugin(plugin, id)
+        }
       }
       getEditorDocument().head.appendChild(el);
     }
