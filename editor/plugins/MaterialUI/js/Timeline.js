@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 
 const SCRIPT = document.currentScript
 const SCRIPT_ID = SCRIPT.getAttribute('id')
-const { template } = window.SCRIPTS[SCRIPT_ID]
+const TEMPLATE = window.TEMPLATES[SCRIPT_ID]
 
 function CustomizedTimeline() {
   return (
@@ -91,4 +91,4 @@ function CustomizedTimeline() {
   );
 }
 
-ReactDOM.render(<CustomizedTimeline />, template);
+ReactDOM.render(<CustomizedTimeline />, TEMPLATE);

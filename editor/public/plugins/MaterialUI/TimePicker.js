@@ -148,22 +148,22 @@
 /******/
 /******/
 /******/ 	// add entry module to deferred list
-/******/ 	deferredModules.push(["../plugins/MaterialUI/js/TimePicker.js","vendors.js"]);
+/******/ 	deferredModules.push(["./MaterialUI/js/TimePicker.js","vendors.js"]);
 /******/ 	// run deferred modules when ready
 /******/ 	return checkDeferredModules();
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "../plugins/MaterialUI/js/TimePicker.js":
-/*!**********************************************!*\
-  !*** ../plugins/MaterialUI/js/TimePicker.js ***!
-  \**********************************************/
+/***/ "./MaterialUI/js/TimePicker.js":
+/*!*************************************!*\
+  !*** ./MaterialUI/js/TimePicker.js ***!
+  \*************************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"../plugins/MaterialUI/node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ \"../plugins/MaterialUI/node_modules/react-dom/index.js\");\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @mui/material */ \"../plugins/MaterialUI/node_modules/@mui/material/index.js\");\n/* harmony import */ var _mui_lab__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @mui/lab */ \"../plugins/MaterialUI/node_modules/@mui/lab/index.js\");\n/* harmony import */ var _mui_lab_AdapterDateFns__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @mui/lab/AdapterDateFns */ \"../plugins/MaterialUI/node_modules/@mui/lab/AdapterDateFns/index.js\");\n\n\n\n\n\nconst SCRIPT = document.currentScript;\nconst SCRIPT_ID = SCRIPT.getAttribute('id');\nconst {\n  template\n} = window.SCRIPTS[SCRIPT_ID];\n\nconst Component = () => {\n  const [value, setValue] = react__WEBPACK_IMPORTED_MODULE_0___default.a.useState(null);\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_mui_lab__WEBPACK_IMPORTED_MODULE_3__[\"LocalizationProvider\"], {\n    dateAdapter: _mui_lab_AdapterDateFns__WEBPACK_IMPORTED_MODULE_4__[\"default\"]\n  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_mui_lab__WEBPACK_IMPORTED_MODULE_3__[\"TimePicker\"], {\n    label: \"Basic example\",\n    value: value,\n    onChange: newValue => {\n      setValue(newValue);\n    },\n    renderInput: params => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_mui_material__WEBPACK_IMPORTED_MODULE_2__[\"TextField\"], params)\n  }));\n};\n\nreact_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Component, null), template);\n\n//# sourceURL=webpack:///../plugins/MaterialUI/js/TimePicker.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ \"./node_modules/react-dom/index.js\");\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @mui/material */ \"./node_modules/@mui/material/index.js\");\n/* harmony import */ var _mui_lab__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @mui/lab */ \"./node_modules/@mui/lab/index.js\");\n/* harmony import */ var _mui_lab_AdapterDateFns__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @mui/lab/AdapterDateFns */ \"./node_modules/@mui/lab/AdapterDateFns/index.js\");\n\n\n\n\n\nconst SCRIPT = document.currentScript;\nconst SCRIPT_ID = SCRIPT.getAttribute('id');\nconst TEMPLATE = window.TEMPLATES[SCRIPT_ID];\n\nconst Component = () => {\n  const [value, setValue] = react__WEBPACK_IMPORTED_MODULE_0___default.a.useState(null);\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_mui_lab__WEBPACK_IMPORTED_MODULE_3__[\"LocalizationProvider\"], {\n    dateAdapter: _mui_lab_AdapterDateFns__WEBPACK_IMPORTED_MODULE_4__[\"default\"]\n  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_mui_lab__WEBPACK_IMPORTED_MODULE_3__[\"TimePicker\"], {\n    label: \"Basic example\",\n    value: value,\n    onChange: newValue => {\n      setValue(newValue);\n    },\n    renderInput: params => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_mui_material__WEBPACK_IMPORTED_MODULE_2__[\"TextField\"], params)\n  }));\n};\n\nreact_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Component, null), TEMPLATE);\n\n//# sourceURL=webpack:///./MaterialUI/js/TimePicker.js?");
 
 /***/ })
 

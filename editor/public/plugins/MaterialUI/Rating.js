@@ -148,22 +148,22 @@
 /******/
 /******/
 /******/ 	// add entry module to deferred list
-/******/ 	deferredModules.push(["../plugins/MaterialUI/js/Rating.js","vendors.js"]);
+/******/ 	deferredModules.push(["./MaterialUI/js/Rating.js","vendors.js"]);
 /******/ 	// run deferred modules when ready
 /******/ 	return checkDeferredModules();
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "../plugins/MaterialUI/js/Rating.js":
-/*!******************************************!*\
-  !*** ../plugins/MaterialUI/js/Rating.js ***!
-  \******************************************/
+/***/ "./MaterialUI/js/Rating.js":
+/*!*********************************!*\
+  !*** ./MaterialUI/js/Rating.js ***!
+  \*********************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"default\", function() { return BasicRating; });\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"../plugins/MaterialUI/node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ \"../plugins/MaterialUI/node_modules/react-dom/index.js\");\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _mui_material_Box__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @mui/material/Box */ \"../plugins/MaterialUI/node_modules/@mui/material/Box/index.js\");\n/* harmony import */ var _mui_material_Rating__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @mui/material/Rating */ \"../plugins/MaterialUI/node_modules/@mui/material/Rating/index.js\");\n\n\n\n\nconst SCRIPT = document.currentScript;\nconst SCRIPT_ID = SCRIPT.getAttribute('id');\nconst {\n  template\n} = window.SCRIPTS[SCRIPT_ID];\nfunction BasicRating() {\n  const [value, setValue] = react__WEBPACK_IMPORTED_MODULE_0__[\"useState\"](2);\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__[\"createElement\"](_mui_material_Box__WEBPACK_IMPORTED_MODULE_2__[\"default\"], {\n    sx: {\n      \"& > legend\": {\n        mt: 2\n      }\n    }\n  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__[\"createElement\"](_mui_material_Rating__WEBPACK_IMPORTED_MODULE_3__[\"default\"], {\n    name: \"simple-controlled\",\n    value: value,\n    onChange: (event, newValue) => {\n      setValue(newValue);\n    }\n  }));\n}\nreact_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__[\"createElement\"](BasicRating, null), template);\n\n//# sourceURL=webpack:///../plugins/MaterialUI/js/Rating.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"default\", function() { return BasicRating; });\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ \"./node_modules/react-dom/index.js\");\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _mui_material_Box__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @mui/material/Box */ \"./node_modules/@mui/material/Box/index.js\");\n/* harmony import */ var _mui_material_Rating__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @mui/material/Rating */ \"./node_modules/@mui/material/Rating/index.js\");\n\n\n\n\nconst SCRIPT = document.currentScript;\nconst SCRIPT_ID = SCRIPT.getAttribute('id');\nconst TEMPLATE = window.TEMPLATES[SCRIPT_ID];\nfunction BasicRating() {\n  const [value, setValue] = react__WEBPACK_IMPORTED_MODULE_0__[\"useState\"](2);\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__[\"createElement\"](_mui_material_Box__WEBPACK_IMPORTED_MODULE_2__[\"default\"], {\n    sx: {\n      \"& > legend\": {\n        mt: 2\n      }\n    }\n  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__[\"createElement\"](_mui_material_Rating__WEBPACK_IMPORTED_MODULE_3__[\"default\"], {\n    name: \"simple-controlled\",\n    value: value,\n    onChange: (event, newValue) => {\n      setValue(newValue);\n    }\n  }));\n}\nreact_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__[\"createElement\"](BasicRating, null), TEMPLATE);\n\n//# sourceURL=webpack:///./MaterialUI/js/Rating.js?");
 
 /***/ })
 

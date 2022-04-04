@@ -5,7 +5,7 @@ import Rating from "@mui/material/Rating";
 
 const SCRIPT = document.currentScript
 const SCRIPT_ID = SCRIPT.getAttribute('id')
-const { template } = window.SCRIPTS[SCRIPT_ID]
+const TEMPLATE = window.TEMPLATES[SCRIPT_ID]
 
 export default function BasicRating() {
   const [value, setValue] = React.useState(2);
@@ -27,4 +27,4 @@ export default function BasicRating() {
   );
 }
 
-ReactDOM.render(<BasicRating />, template);
+ReactDOM.render(<BasicRating />, TEMPLATE);

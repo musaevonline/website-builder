@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 
 const SCRIPT = document.currentScript
 const SCRIPT_ID = SCRIPT.getAttribute('id')
-const { template } = window.SCRIPTS[SCRIPT_ID]
+const TEMPLATE = window.TEMPLATES[SCRIPT_ID]
 
 const bull = (
   <Box
@@ -46,4 +46,4 @@ export default function BasicCard() {
   );
 }
 
-ReactDOM.render(<BasicCard />, template);
+ReactDOM.render(<BasicCard />, TEMPLATE);

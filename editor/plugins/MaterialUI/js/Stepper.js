@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 
 const SCRIPT = document.currentScript
 const SCRIPT_ID = SCRIPT.getAttribute('id')
-const { template } = window.SCRIPTS[SCRIPT_ID]
+const TEMPLATE = window.TEMPLATES[SCRIPT_ID]
 
 const steps = [
   {
@@ -99,4 +99,4 @@ export default function VerticalLinearStepper() {
   );
 }
 
-ReactDOM.render(<VerticalLinearStepper />, template);
+ReactDOM.render(<VerticalLinearStepper />, TEMPLATE);

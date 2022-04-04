@@ -6,7 +6,7 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 
 const SCRIPT = document.currentScript
 const SCRIPT_ID = SCRIPT.getAttribute('id')
-const { template } = window.SCRIPTS[SCRIPT_ID]
+const TEMPLATE = window.TEMPLATES[SCRIPT_ID]
 
 const Component = () => {
   const [value, setValue] = React.useState(null);
@@ -23,4 +23,4 @@ const Component = () => {
     </LocalizationProvider>
   );
 };
-ReactDOM.render(<Component />, template);
+ReactDOM.render(<Component />, TEMPLATE);

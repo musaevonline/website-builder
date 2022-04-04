@@ -6,7 +6,7 @@ import Slider from '@mui/material/Slider';
 
 const SCRIPT = document.currentScript
 const SCRIPT_ID = SCRIPT.getAttribute('id')
-const { template } = window.SCRIPTS[SCRIPT_ID]
+const TEMPLATE = window.TEMPLATES[SCRIPT_ID]
 
 export default function ContinuousSlider() {
   const [value, setValue] = React.useState(30);
@@ -25,4 +25,4 @@ export default function ContinuousSlider() {
   );
 }
 
-ReactDOM.render(<ContinuousSlider />, template);
+ReactDOM.render(<ContinuousSlider />, TEMPLATE);

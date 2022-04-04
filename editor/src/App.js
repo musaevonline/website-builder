@@ -12,6 +12,7 @@ import { Tree } from "antd";
 import "antd/lib/tree/style/css";
 import { v4 as uuid } from "uuid";
 import StyleField from "./components/StyleFiels";
+import PropsField from './components/PropsField';
 
 const useForceUpdate = () => {
   const [value, setValue] = useState();
@@ -141,13 +142,16 @@ function App() {
       vendors.setAttribute('exportable', 'true')
       vendors.setAttribute('defer', 'true')
       getEditorDocument().head.appendChild(vendors)
-      getEditorWindow().SCRIPTS = {}
+      getEditorWindow().TEMPLATES = {}
+      getEditorWindow().ACTIONS = {}
+      getEditorWindow().GLOBAL = {}
     };
   }, [forceUpdate, selected, hovered]);
 
-  const newPlugin = async (plugin, initId) => {
+  const newPlugin = async (plugin) => {
     const { script: scriptSrc, template: templateSrc } = plugin
     let template = null;
+    const id = uuid()
     if (templateSrc) {
       const html = await fetch(templateSrc).then(res => res.text())
       const { mouseX, mouseY } = contextMenu;
@@ -157,6 +161,7 @@ function App() {
       const root = parser.parseFromString(html, 'text/html')
         .getRootNode().body.firstElementChild
       root.setAttribute('editable', 'true');
+      root.setAttribute('script-id', id);
       root.style.position = 'absolute'
       root.style.left = x + 'px'
       root.style.top = y + 'px'
@@ -164,22 +169,13 @@ function App() {
       template = root;
     }
     if (scriptSrc) {
-      const id = initId || uuid()
       const el = document.createElement("script");
       el.setAttribute("src", scriptSrc);
       el.setAttribute("defer", "true");
       el.setAttribute("id", id);
       el.setAttribute("exportable", "true");
-      getEditorWindow().SCRIPTS[id] = {
-        template,
-        reset() {
-          el.remove();
-          if (template) {
-            template.remove()
-          }
-          newPlugin(plugin, id)
-        }
-      }
+      getEditorWindow().TEMPLATES[id] = template;
+      getEditorWindow().ACTIONS[id] = {};
       getEditorDocument().head.appendChild(el);
     }
     setContextMenu(null);
@@ -187,18 +183,22 @@ function App() {
 
   const main = useRef();
 
-  const styles =
-  selected &&
-  selected
-    .getAttribute("style") &&
-  selected
-    .getAttribute("style")
-    .split(";")
-    .filter((style) => style)
+  const selectedStyles = selected && selected.getAttribute("style")
+  const selectedScriptID = selected && selected.getAttribute("script-id");
+  const styles = selectedStyles && selectedStyles.split(";").filter((style) => style)
     .map((style) => {
       const [name, value] = style.split(":");
       return { name: name.trim(), value: value.trim() };
     });
+
+  const props = selectedScriptID && getEditorWindow().STORE.getState()[selectedScriptID]
+  const availableProps = selectedScriptID && Object.keys(getEditorWindow().ACTIONS[selectedScriptID])
+  const onDispatch = ({prop, value}) => {
+    const action = getEditorWindow().ACTIONS[selectedScriptID][prop]
+    getEditorWindow().STORE.dispatch(action(value));
+    forceUpdate();
+    return true;
+  }
 
   return (
     <Grid container sx={{ height: "100vh" }}>
@@ -207,10 +207,16 @@ function App() {
           height="50vh"
           sx={{ display: "flex", flexDirection: "column", gap: 2 }}
         >
+          ID: {selectedScriptID}
           <StyleField
             onAddStyle={addStyleToSelected}
             styles={styles || []}
-          ></StyleField>
+          />
+          <PropsField
+            onDispatch={onDispatch}
+            availableProps={availableProps || []}
+            props={props || []}
+          />
         </Box>
       </Grid>
       <Grid item xs={9}>

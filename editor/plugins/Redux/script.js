@@ -1,9 +1,19 @@
-import {createStore} from 'redux'
+import { createStore, combineReducers } from 'redux'
 
-const reducer = () => {
-    return {
-        test: '123 test'
-    }
+const store = createStore(createReducer(), {})
+
+store.asyncReducers = {}
+
+function createReducer(asyncReducers) {
+    return combineReducers({
+      root: (state = {}) => state,
+      ...asyncReducers
+    })
 }
 
-window.STORE = createStore(reducer)
+store.injectReducer = (key, asyncReducer) => {
+    store.asyncReducers[key] = asyncReducer
+    store.replaceReducer(createReducer(store.asyncReducers))
+}
+
+window.STORE = store;

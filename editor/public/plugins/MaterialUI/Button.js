@@ -148,22 +148,22 @@
 /******/
 /******/
 /******/ 	// add entry module to deferred list
-/******/ 	deferredModules.push(["../plugins/MaterialUI/js/Button.js","vendors.js"]);
+/******/ 	deferredModules.push(["./MaterialUI/js/Button.js","vendors.js"]);
 /******/ 	// run deferred modules when ready
 /******/ 	return checkDeferredModules();
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "../plugins/MaterialUI/js/Button.js":
-/*!******************************************!*\
-  !*** ../plugins/MaterialUI/js/Button.js ***!
-  \******************************************/
+/***/ "./MaterialUI/js/Button.js":
+/*!*********************************!*\
+  !*** ./MaterialUI/js/Button.js ***!
+  \*********************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"../plugins/MaterialUI/node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ \"../plugins/MaterialUI/node_modules/react-dom/index.js\");\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @mui/material */ \"../plugins/MaterialUI/node_modules/@mui/material/index.js\");\n/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ \"../plugins/MaterialUI/node_modules/react-redux/es/index.js\");\n\n\n\n\nconst SCRIPT = document.currentScript;\nconst SCRIPT_ID = SCRIPT.getAttribute('id');\nconst {\n  template\n} = window.SCRIPTS[SCRIPT_ID];\n\nconst App = () => {\n  const [test, setTest] = Object(react__WEBPACK_IMPORTED_MODULE_0__[\"useState\"])();\n\n  window.SCRIPTS[SCRIPT_ID].onChange = test => {\n    setTest(test);\n  };\n\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_mui_material__WEBPACK_IMPORTED_MODULE_2__[\"Button\"], {\n    variant: \"contained\"\n  }, test);\n};\n\nreact_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_redux__WEBPACK_IMPORTED_MODULE_3__[\"Provider\"], {\n  store: window.STORE\n}, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(App, null)), template);\n\n//# sourceURL=webpack:///../plugins/MaterialUI/js/Button.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ \"./node_modules/react-dom/index.js\");\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @mui/material */ \"./node_modules/@mui/material/index.js\");\n/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ \"./node_modules/react-redux/es/index.js\");\n/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @reduxjs/toolkit */ \"./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js\");\n\n\n\n\n\nconst SCRIPT = document.currentScript;\nconst SCRIPT_ID = SCRIPT.getAttribute('id');\nconst TEMPLATE = window.TEMPLATES[SCRIPT_ID];\nconst {\n  reducer,\n  actions\n} = Object(_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_4__[\"createSlice\"])({\n  name: SCRIPT_ID,\n  initialState: {\n    label: 'OK',\n    onClick: undefined\n  },\n  reducers: {\n    label: (state, action) => {\n      state.label = action.payload;\n    },\n    onClick: (state, action) => {\n      state.onClick = action.payload;\n    }\n  }\n});\nwindow.STORE.injectReducer(SCRIPT_ID, reducer);\nwindow.ACTIONS[SCRIPT_ID] = actions;\n\nconst App = () => {\n  const label = Object(react_redux__WEBPACK_IMPORTED_MODULE_3__[\"useSelector\"])(state => state[SCRIPT_ID].label);\n  const onClick = eval(Object(react_redux__WEBPACK_IMPORTED_MODULE_3__[\"useSelector\"])(state => state[SCRIPT_ID].onClick));\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_mui_material__WEBPACK_IMPORTED_MODULE_2__[\"Button\"], {\n    variant: \"contained\",\n    onClick: onClick\n  }, label);\n};\n\nreact_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_redux__WEBPACK_IMPORTED_MODULE_3__[\"Provider\"], {\n  store: window.STORE\n}, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(App, null)), TEMPLATE);\n\n//# sourceURL=webpack:///./MaterialUI/js/Button.js?");
 
 /***/ })
 

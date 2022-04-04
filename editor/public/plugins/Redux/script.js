@@ -148,22 +148,22 @@
 /******/
 /******/
 /******/ 	// add entry module to deferred list
-/******/ 	deferredModules.push(["../plugins/Redux/script.js","vendors.js"]);
+/******/ 	deferredModules.push(["./Redux/script.js","vendors.js"]);
 /******/ 	// run deferred modules when ready
 /******/ 	return checkDeferredModules();
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "../plugins/Redux/script.js":
-/*!**********************************!*\
-  !*** ../plugins/Redux/script.js ***!
-  \**********************************/
+/***/ "./Redux/script.js":
+/*!*************************!*\
+  !*** ./Redux/script.js ***!
+  \*************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! redux */ \"../plugins/Redux/node_modules/redux/es/redux.js\");\n\n\nconst reducer = () => {\n  return {\n    test: '123 test'\n  };\n};\n\nwindow.STORE = Object(redux__WEBPACK_IMPORTED_MODULE_0__[\"createStore\"])(reducer);\n\n//# sourceURL=webpack:///../plugins/Redux/script.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! redux */ \"./node_modules/redux/es/redux.js\");\n\nconst store = Object(redux__WEBPACK_IMPORTED_MODULE_0__[\"createStore\"])(createReducer(), {});\nstore.asyncReducers = {};\n\nfunction createReducer(asyncReducers) {\n  return Object(redux__WEBPACK_IMPORTED_MODULE_0__[\"combineReducers\"])({\n    root: (state = {}) => state,\n    ...asyncReducers\n  });\n}\n\nstore.injectReducer = (key, asyncReducer) => {\n  store.asyncReducers[key] = asyncReducer;\n  store.replaceReducer(createReducer(store.asyncReducers));\n};\n\nwindow.STORE = store;\n\n//# sourceURL=webpack:///./Redux/script.js?");
 
 /***/ })
 
