@@ -14,5 +14,18 @@ export const useMyStore = (id, initialState) => {
         window.STORE[id] = proxy;
     }, [])
 
-    return window.STORE[id] || initialState;
+    const state = window.STORE[id] || initialState;
+
+    let resultState = {}
+    for (let key in state) {
+        const value = state[key]
+        if (key[0] === '$') {
+            try {
+                resultState[key.slice(1)] = eval(value)
+            } catch {}
+        } else {
+            resultState[key] = value
+        }
+    }
+    return resultState;
 }

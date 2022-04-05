@@ -7,9 +7,43 @@ const SCRIPT = document.currentScript
 const SCRIPT_ID = SCRIPT.getAttribute('id')
 const TEMPLATE = window.TEMPLATES[SCRIPT_ID]
 
+const INITIAL_STATE = {
+    autoComplete: undefined,
+    autoFocus: false,
+    children: undefined,
+    className: undefined,
+    color: 'primary',
+    defaultValue: undefined,
+    disabled: false,
+    error: false,
+    FormHelperTextProps: undefined,
+    fullWidth: false,
+    helperText: undefined,
+    InputLabelProps: undefined,
+    inputProps: undefined,
+    InputProps: undefined,
+    inputRef: undefined,
+    label: undefined,
+    maxRows: undefined,
+    minRows: undefined,
+    multiline: false,
+    name: undefined,
+    onBlur: undefined,
+    onChange: undefined,
+    onFocus: undefined,
+    placeholder: undefined,
+    $required: false,
+    rows: undefined,
+    select: false,
+    SelectProps: undefined,
+    type: undefined,
+    value: undefined,
+    variant: 'outlined'
+}
+
 const App = () => {
-    const { onChange } = useMyStore(SCRIPT_ID, { onChange: undefined })
-    return <TextField label="Hello world" onChange={eval(onChange)} />
+    const state = useMyStore(SCRIPT_ID, INITIAL_STATE)
+    return <TextField {...state} />
 }
 
 ReactDOM.render((<App />), TEMPLATE);

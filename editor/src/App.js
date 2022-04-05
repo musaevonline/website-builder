@@ -6,13 +6,13 @@ import {
   Box,
   Menu,
   MenuItem,
+  Typography,
+  Divider,
 } from "@mui/material";
 import NestedMenuItem from "./NestedMenuItem";
-import { Tree } from "antd";
-import "antd/lib/tree/style/css";
 import { v4 as uuid } from "uuid";
-import StyleField from "./components/StyleFiels";
-import PropsField from './components/PropsField';
+import { StyleFields } from "./components/StyleFields";
+import { PropsFields } from './components/PropsFields';
 
 const useForceUpdate = () => {
   const [value, setValue] = useState();
@@ -190,27 +190,43 @@ function App() {
     });
 
   const props = selectedScriptID && getEditorWindow().STORE[selectedScriptID]
-  const onSave = ({ key, value }) => {
-    getEditorWindow().STORE[selectedScriptID][key] = value;
+  const onSave = (prop, value) => {
+    props[prop] = value;
     forceUpdate();
     return true;
   }
-
+  const toggleJSMode = (key) => {
+    const value = props[key]
+    if (key[0] === '$') {
+      props[key.slice(1)] = value;
+    } else {
+      props['$' + key] = value;
+    }
+    delete props[key]
+    forceUpdate();
+  }
+  console.log(props)
   return (
     <Grid container sx={{ height: "100vh" }}>
-      <Grid item xs={3}>
+      <Grid item xs={3} sx={{ padding: 1, paddingLeft: 0 }}>
         <Box
-          height="50vh"
+          height="100vh"
           sx={{ display: "flex", flexDirection: "column", gap: 2 }}
         >
-          ID: {selectedScriptID}
-          <StyleField
+          <StyleFields
             onAddStyle={addStyleToSelected}
             styles={styles || []}
           />
-          <PropsField
-            onSave={onSave}
+          {selectedScriptID && (
+            <>
+              <Typography>ID: {selectedScriptID}</Typography>
+              <Divider />
+            </>
+          )}
+          <PropsFields
             props={props || []}
+            onSave={onSave}
+            toggleJSMode={toggleJSMode}
           />
         </Box>
       </Grid>

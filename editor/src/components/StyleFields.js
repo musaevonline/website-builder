@@ -2,7 +2,7 @@ import { Formik, Form, Field } from "formik";
 import { cssStyles } from "./styles";
 import { Grid, TextField, Button, Autocomplete } from "@mui/material";
 
-export default function StyleField({ onAddStyle, styles }) {
+export const StyleFields = ({ onAddStyle, styles }) => {
   const onSubmit = (values, { resetForm }) => {
     console.log(values);
     if (onAddStyle(values)) {
@@ -43,6 +43,7 @@ export default function StyleField({ onAddStyle, styles }) {
                 as={TextField}
                 variant="standard"
                 label="Value"
+                fullWidth
               />
             </Grid>
           </Grid>
