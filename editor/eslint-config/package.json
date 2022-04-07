@@ -1,0 +1,58 @@
+{
+  "name": "@hmdb/eslint-config",
+  "version": "1.1.0",
+  "description": "ESLint Shareable Config",
+  "main": "src/index.js",
+  "scripts": {
+    "lint": "eslint --ext=.js .",
+    "lint:fix": "eslint --ext=.js --fix .",
+    "lint-staged": "lint-staged",
+    "semantic-release": "semantic-release --no-ci"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://stash.sigma.sbrf.ru/scm/hmdb/hmdb.git"
+  },
+  "publishConfig": {
+    "registry": "http://sbtatlas.sigma.sbrf.ru/nexus/content/repositories/npm-corp/",
+    "tag": "latest"
+  },
+  "author": "Сайфутдинов Дамир",
+  "license": "ISC",
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.14.1",
+    "@typescript-eslint/parser": "^4.14.1",
+    "eslint": "^7.18.0",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-functional": "^3.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsdoc": "^31.3.3",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "prettier": "^2.2.1"
+  },
+  "peerDependencies": {
+    "eslint": "^7.18.0",
+    "eslint-plugin-functional": "^3.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsdoc": "^31.3.3",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "@typescript-eslint/eslint-plugin": "^4.14.1",
+    "@typescript-eslint/parser": "^4.14.1",
+    "prettier": "^2.2.1",
+    "eslint-config-prettier": "^7.2.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint-staged"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
