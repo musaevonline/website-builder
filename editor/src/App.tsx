@@ -139,10 +139,7 @@ function App() {
         }
         fistEditableElement.classList.add('selected');
         selected.current = fistEditableElement;
-      } else if (
-        selected.current &&
-        fistEditableElement === getDocument().body
-      ) {
+      } else if (selected.current) {
         selected.current.classList.remove('selected');
         selected.current = null;
       }
