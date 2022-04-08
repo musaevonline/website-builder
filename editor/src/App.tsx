@@ -33,6 +33,31 @@ function App() {
   const getDocument = () => iframe.current.contentDocument;
   const getWindow = () => iframe.current.contentWindow;
 
+  const getOffsetBetween = (el1: HTMLElement | 0, el2: HTMLElement | 0) => {
+    type TRect = Pick<DOMRect, 'x' | 'y'>;
+    const rect1: TRect = { x: 0, y: 0 };
+    const rect2: TRect = { x: 0, y: 0 };
+
+    if (el1 !== 0) {
+      const clientRect = el1.getBoundingClientRect();
+
+      rect1.x = clientRect.x + getWindow().scrollX;
+      rect1.y = clientRect.y + getWindow().scrollY;
+    }
+
+    if (el2 !== 0) {
+      const clientRect = el2.getBoundingClientRect();
+
+      rect2.x = clientRect.x + getWindow().scrollX;
+      rect2.y = clientRect.y + getWindow().scrollY;
+    }
+
+    return {
+      offsetX: rect1.x - rect2.x,
+      offsetY: rect1.y - rect2.y,
+    };
+  };
+
   const handleContextMenu = (event: any) => {
     event.preventDefault();
     setContextMenu({
@@ -68,27 +93,56 @@ function App() {
       return;
     }
 
-    let el: any = null;
+    let draggingElementInfo: any = null;
 
     getWindow().onmousedown = (e: any) => {
-      const { target, offsetX, offsetY } = e;
-      const maintarget = e.path.find(
+      const fistEditableElement = e.path.find(
         (c: any) => c.hasAttribute && c.hasAttribute('editable')
       );
+      const fistEditableElementWithAbsolute = e.path.find(
+        (c: any) =>
+          c.hasAttribute &&
+          c.hasAttribute('editable') &&
+          c.style &&
+          c.style.position === 'absolute'
+      );
 
-      if (maintarget) {
-        el = {
-          target: maintarget,
-          offsetX,
-          offsetY,
+      if (fistEditableElementWithAbsolute) {
+        const nextAbsoluteElement = e.path.find(
+          (c: HTMLElement) =>
+            c !== fistEditableElementWithAbsolute &&
+            c.style &&
+            c.style.position === 'absolute'
+        );
+        const fistEditableElementWithAbsoluteOffset = getOffsetBetween(
+          e.target,
+          fistEditableElementWithAbsolute
+        );
+        const nextAbsoluteElementPosition =
+          nextAbsoluteElement && getOffsetBetween(nextAbsoluteElement, 0);
+        const targetOffset = {
+          offsetX: e.offsetX,
+          offsetY: e.offsetY,
         };
 
+        draggingElementInfo = {
+          fistEditableElementWithAbsolute,
+          fistEditableElementWithAbsoluteOffset,
+          nextAbsoluteElementPosition,
+          targetOffset,
+        };
+      }
+
+      if (fistEditableElement) {
         if (selected.current) {
           selected.current.classList.remove('selected');
         }
-        maintarget.classList.add('selected');
-        selected.current = maintarget;
-      } else if (selected.current && target === getDocument().body) {
+        fistEditableElement.classList.add('selected');
+        selected.current = fistEditableElement;
+      } else if (
+        selected.current &&
+        fistEditableElement === getDocument().body
+      ) {
         selected.current.classList.remove('selected');
         selected.current = null;
       }
@@ -105,11 +159,38 @@ function App() {
           script.style.top = selected.current.offsetTop + 'px';
         }
       }
-      el = null;
+
+      if (draggingElementInfo?.fistEditableElementWithAbsolute) {
+        draggingElementInfo.fistEditableElementWithAbsolute.classList.remove(
+          'hovered'
+        );
+      }
+      draggingElementInfo = null;
       forceUpdate();
     };
+    getWindow().onmouseout = function (e: any) {
+      const from = e.relatedTarget || e.toElement;
+
+      if (!from || from.nodeName === 'HTML') {
+        if (hovered.current) {
+          hovered.current.classList.remove('hovered');
+          hovered.current = null;
+        }
+
+        if (draggingElementInfo?.fistEditableElementWithAbsolute) {
+          draggingElementInfo.fistEditableElementWithAbsolute.classList.remove(
+            'hovered'
+          );
+        }
+      }
+    };
     getWindow().onmousemove = (e: any) => {
-      const { target, offsetX, offsetY } = el || {};
+      const {
+        fistEditableElementWithAbsolute: draggableElement,
+        fistEditableElementWithAbsoluteOffset: draggableElementOffset = {},
+        nextAbsoluteElementPosition,
+        targetOffset,
+      } = draggingElementInfo || {};
       const maintarget = e.path.find(
         (c: any) => c.hasAttribute && c.hasAttribute('editable')
       );
@@ -120,37 +201,53 @@ function App() {
         }
         maintarget.classList.add('hovered');
         hovered.current = maintarget;
-      } else if (hovered.current && target === getDocument().body) {
+      } else if (hovered.current) {
         hovered.current.classList.remove('hovered');
         hovered.current = null;
       }
 
-      if (target) {
+      if (draggableElement) {
         e.preventDefault();
         const { pageX, pageY, movementX, movementY } = e;
 
-        if (target.style.position === 'relative') {
-          const cx = +target.style.left.replace('px', '');
-          const cy = +target.style.top.replace('px', '');
+        if (draggableElement.style.position === 'relative') {
+          const cx = +draggableElement.style.left.replace('px', '');
+          const cy = +draggableElement.style.top.replace('px', '');
 
-          target.style.left = cx + movementX + 'px';
-          target.style.top = cy + movementY + 'px';
-        } else if (target.parentElement.style.position === 'absolute') {
-          target.style.left =
-            pageX -
-            offsetX -
-            target.parentElement.getBoundingClientRect().x -
-            getWindow().scrollX +
-            'px';
-          target.style.top =
-            pageY -
-            offsetY -
-            target.parentElement.getBoundingClientRect().y -
-            getWindow().scrollY +
-            'px';
-        } else {
-          target.style.left = pageX - offsetX + 'px';
-          target.style.top = pageY - offsetY + 'px';
+          draggableElement.style.left = cx + movementX + 'px';
+          draggableElement.style.top = cy + movementY + 'px';
+        } else if (draggableElement) {
+          const {
+            offsetX: firstEditableOffsetX = 0,
+            offsetY: firstEditableOffsetY = 0,
+          } = draggableElementOffset;
+          const { offsetX: targetOffsetX, offsetY: targetOffsetY } =
+            targetOffset;
+          const marginX =
+            +getComputedStyle(draggableElement).marginLeft.replace('px', '') ||
+            0;
+          const marginY =
+            +getComputedStyle(draggableElement).marginTop.replace('px', '') ||
+            0;
+
+          draggableElement.classList.add('hovered');
+
+          if (nextAbsoluteElementPosition) {
+            const {
+              offsetX: firstAbsoluteOffsetX,
+              offsetY: firstAbsoluteOffsetY,
+            } = nextAbsoluteElementPosition;
+
+            draggableElement.style.left =
+              pageX - firstAbsoluteOffsetX - targetOffsetX - marginX + 'px';
+            draggableElement.style.top =
+              pageY - firstAbsoluteOffsetY - targetOffsetY - marginY + 'px';
+          } else {
+            draggableElement.style.left =
+              pageX - firstEditableOffsetX - targetOffsetX - marginX + 'px';
+            draggableElement.style.top =
+              pageY - firstEditableOffsetY - targetOffsetY - marginY + 'px';
+          }
         }
       }
     };
@@ -225,6 +322,7 @@ function App() {
   const styles =
     selectedStyles &&
     selectedStyles
+      .trim()
       .split(';')
       .filter((style: any) => style)
       .map((style: any) => {
