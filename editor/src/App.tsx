@@ -25,8 +25,12 @@ const useForceUpdate = () => {
   return forceRender;
 };
 
+const insertAfter = (referenceNode: any, newNode: any) => {
+  referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+};
+
 function App() {
-  const selected = useRef<any>(null);
+  const selected = useRef<HTMLElement | null>(null);
   const hovered = useRef<any>(null);
   const [contextMenu, setContextMenu] = useState<any>({ current: null });
   const iframe = useRef<any>();
@@ -70,7 +74,10 @@ function App() {
 
   const forceUpdate = useForceUpdate();
   const addStyleToSelected = ({ name, value }: any) => {
-    if (!selected && !getComputedStyle(selected)[name]) {
+    if (
+      !selected.current ||
+      (selected.current && !getComputedStyle(selected.current)[name])
+    ) {
       return;
     }
     selected.current.style[name] = value;
@@ -86,6 +93,36 @@ function App() {
     forceUpdate();
 
     return !!getComputedStyle(selected.current)[name];
+  };
+
+  const onMakeDraggable = () => {
+    if (!selected.current) {
+      return;
+    }
+    let selectedElementStyles = getComputedStyle(selected.current);
+    const selectedElementPosition = getOffsetBetween(selected.current, 0);
+    const newElement = getDocument().createElement('div');
+
+    newElement.style.width = selectedElementStyles.width;
+    newElement.style.height = selectedElementStyles.height;
+    newElement.style.margin = selectedElementStyles.margin;
+    newElement.style.flexShrink = '0';
+
+    selected.current.style.width = selectedElementStyles.width;
+    selected.current.style.height = selectedElementStyles.height;
+
+    insertAfter(selected.current, newElement);
+    selected.current.style.position = 'absolute';
+    selectedElementStyles = getComputedStyle(selected.current);
+    const marginX = +selectedElementStyles.marginLeft.replace('px', '') || 0;
+    const marginY = +selectedElementStyles.marginTop.replace('px', '') || 0;
+
+    selected.current.style.left =
+      selectedElementPosition.offsetX - marginX + 'px';
+    selected.current.style.top =
+      selectedElementPosition.offsetY - marginY + 'px';
+
+    forceUpdate();
   };
 
   useEffect(() => {
@@ -151,7 +188,7 @@ function App() {
       if (scriptID) {
         const script = getDocument().getElementById(scriptID);
 
-        if (script) {
+        if (script && selected.current) {
           script.style.left = selected.current.offsetLeft + 'px';
           script.style.top = selected.current.offsetTop + 'px';
         }
@@ -355,7 +392,11 @@ function App() {
           height="100vh"
           sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
         >
-          <StyleFields onAddStyle={addStyleToSelected} styles={styles || []} />
+          <StyleFields
+            styles={styles || []}
+            onAddStyle={addStyleToSelected}
+            onMakeDraggable={onMakeDraggable}
+          />
           {selectedScriptID && (
             <>
               <Typography>ID: {selectedScriptID}</Typography>

@@ -4,7 +4,7 @@ import React from 'react';
 
 import { cssStyles } from './styles';
 
-export const StyleFields = ({ styles, onAddStyle }: any) => {
+export const StyleFields = ({ styles, onAddStyle, onMakeDraggable }: any) => {
   const onSubmit = (values: any, { resetForm }: any) => {
     if (onAddStyle(values)) {
       resetForm();
@@ -51,6 +51,9 @@ export const StyleFields = ({ styles, onAddStyle }: any) => {
           </Grid>
           <Button type="submit" variant="contained">
             Add
+          </Button>
+          <Button variant="contained" onClick={onMakeDraggable}>
+            Make draggable
           </Button>
         </Form>
       )}
