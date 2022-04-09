@@ -1,19 +1,21 @@
-import { Formik, Form, Field } from "formik";
-import { cssStyles } from "./styles";
-import { Grid, TextField, Button, Autocomplete } from "@mui/material";
+import { Grid, TextField, Button, Autocomplete } from '@mui/material';
+import { Formik, Form, Field } from 'formik';
+import React from 'react';
 
-export const StyleFields = ({ onAddStyle, styles }) => {
-  const onSubmit = (values, { resetForm }) => {
-    console.log(values);
+import { cssStyles } from './styles';
+
+export const StyleFields = ({ styles, onAddStyle }: any) => {
+  const onSubmit = (values: any, { resetForm }: any) => {
     if (onAddStyle(values)) {
       resetForm();
     }
   };
+
   return (
-    <Formik initialValues={{ name: "", value: "" }} onSubmit={onSubmit}>
+    <Formik initialValues={{ name: '', value: '' }} onSubmit={onSubmit}>
       {({ setFieldValue }) => (
         <Form>
-          {styles.map(({ name, value }) => (
+          {styles.map(({ name, value }: any) => (
             <Grid container key={name}>
               <Grid item xs={6}>
                 {name}
@@ -31,10 +33,10 @@ export const StyleFields = ({ onAddStyle, styles }) => {
                 options={cssStyles}
                 disableClearable
                 freeSolo
-                renderInput={(params) => (
+                renderInput={(params: any) => (
                   <TextField {...params} label="Style" variant="standard" />
                 )}
-                onChange={(e, value) => setFieldValue("name", value)}
+                onChange={(e: any, value: any) => setFieldValue('name', value)}
               />
             </Grid>
             <Grid item xs={6}>
@@ -47,11 +49,11 @@ export const StyleFields = ({ onAddStyle, styles }) => {
               />
             </Grid>
           </Grid>
-          <Button type="submit" variant="contained" width="100%">
+          <Button type="submit" variant="contained">
             Add
           </Button>
         </Form>
       )}
     </Formik>
   );
-}
+};
