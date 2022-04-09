@@ -25,10 +25,6 @@ const useForceUpdate = () => {
   return forceRender;
 };
 
-const insertAfter = (referenceNode: any, newNode: any) => {
-  referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
-};
-
 const getDomPath = (el: HTMLElement) => {
   const stack = [];
   let currentElement = el;
@@ -40,6 +36,19 @@ const getDomPath = (el: HTMLElement) => {
 
   return stack;
 };
+
+function getNodeTree(el: HTMLElement): any {
+  const children = [];
+
+  for (let j = 0; j < el.children.length; j++) {
+    children.push(getNodeTree(el.children[j] as HTMLElement));
+  }
+
+  return {
+    el,
+    children,
+  };
+}
 
 function App() {
   const selected = useRef<HTMLElement | null>(null);
@@ -152,7 +161,7 @@ function App() {
     selected.current.style.width = selectedElementStyles.width;
     selected.current.style.height = selectedElementStyles.height;
 
-    insertAfter(selected.current, newElement);
+    selected.current.parentNode?.insertBefore(newElement, selected.current);
     selected.current.style.position = 'absolute';
 
     selectedElementStyles = getComputedStyle(selected.current);
@@ -346,6 +355,50 @@ function App() {
       getDocument().head.appendChild(vendors);
       getWindow().TEMPLATES = {};
       getWindow().STORE = {};
+
+      const tree = getNodeTree(getDocument().body);
+      let treeAsArray: any = [];
+
+      treeAsArray = treeAsArray.concat(tree.children);
+      let node;
+
+      const allChanges: any = [];
+
+      while ((node = treeAsArray.shift())) {
+        const { el } = node;
+        const elStyles = getComputedStyle(el);
+
+        if (elStyles.display === 'none') {
+          continue;
+        }
+
+        const { offsetX, offsetY } = getOffsetBetween(
+          el,
+          el.parentElement || 0
+        );
+
+        allChanges.push({
+          el,
+          changes: {
+            left: offsetX + 'px',
+            top: (el.style.top = offsetY + 'px'),
+            width: elStyles.width,
+            height: elStyles.height,
+          },
+        });
+        treeAsArray = treeAsArray.concat(node.children);
+      }
+
+      allChanges.forEach(({ el, changes }: any) => {
+        const { left, top, width, height } = changes;
+
+        el.style.left = left;
+        el.style.top = top;
+        el.style.width = width;
+        el.style.height = height;
+        el.style.setProperty('margin', 'unset', 'important');
+        el.style.position = 'absolute';
+      });
     };
   }, []);
 
@@ -452,7 +505,7 @@ function App() {
           />
         </Box>
       </Grid>
-      <Grid item xs={9}>
+      <Grid item xs={9} sx={{ overflow: 'auto' }}>
         <iframe
           src="/site/index.html"
           width="100%"
@@ -460,6 +513,7 @@ function App() {
           ref={iframe}
           title="main"
           id="main"
+          style={{ minWidth: 1000 }}
         ></iframe>
       </Grid>
       <Menu
