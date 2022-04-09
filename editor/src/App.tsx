@@ -29,6 +29,18 @@ const insertAfter = (referenceNode: any, newNode: any) => {
   referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 };
 
+const getDomPath = (el: HTMLElement) => {
+  const stack = [];
+  let currentElement = el;
+
+  while (currentElement.parentElement !== null) {
+    stack.push(currentElement);
+    currentElement = currentElement.parentElement;
+  }
+
+  return stack;
+};
+
 function App() {
   const selected = useRef<HTMLElement | null>(null);
   const hovered = useRef<any>(null);
@@ -96,11 +108,40 @@ function App() {
   };
 
   const onMakeDraggable = () => {
-    if (!selected.current) {
+    if (!selected.current || selected.current.style.position === 'absolute') {
       return;
     }
+    selected.current
+      .querySelectorAll<HTMLElement>('*')
+      .forEach((selectedElementChild) => {
+        if (!selected.current) {
+          return;
+        }
+
+        if (selectedElementChild.style.position === 'absolute') {
+          const { offsetX, offsetY } = getOffsetBetween(
+            selectedElementChild,
+            selected.current
+          );
+          const selectedElementStyles = getComputedStyle(selectedElementChild);
+          const marginX =
+            +selectedElementStyles.marginLeft.replace('px', '') || 0;
+          const marginY =
+            +selectedElementStyles.marginTop.replace('px', '') || 0;
+
+          selectedElementChild.style.left = offsetX - marginX + 'px';
+          selectedElementChild.style.top = offsetY - marginY + 'px';
+        }
+      });
+
+    const nextAbsoluteElement = getDomPath(selected.current)
+      .slice(1)
+      .find((c: HTMLElement) => c.style && c.style.position === 'absolute');
+
     let selectedElementStyles = getComputedStyle(selected.current);
-    const selectedElementPosition = getOffsetBetween(selected.current, 0);
+    const selectedElementPosition = nextAbsoluteElement
+      ? getOffsetBetween(selected.current, nextAbsoluteElement)
+      : getOffsetBetween(selected.current, 0);
     const newElement = getDocument().createElement('div');
 
     newElement.style.width = selectedElementStyles.width;
@@ -113,6 +154,7 @@ function App() {
 
     insertAfter(selected.current, newElement);
     selected.current.style.position = 'absolute';
+
     selectedElementStyles = getComputedStyle(selected.current);
     const marginX = +selectedElementStyles.marginLeft.replace('px', '') || 0;
     const marginY = +selectedElementStyles.marginTop.replace('px', '') || 0;
