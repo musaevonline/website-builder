@@ -176,10 +176,10 @@ function App() {
     let draggingElementInfo: any = null;
 
     getWindow().onmousedown = (e: any) => {
-      const fistEditableElement = e.path.find(
+      const firstEditableElement = e.path.find(
         (c: any) => c.hasAttribute && c.hasAttribute('editable')
       );
-      const fistEditableElementWithAbsolute = e.path.find(
+      const draggableElement = e.path.find(
         (c: any) =>
           c.hasAttribute &&
           c.hasAttribute('editable') &&
@@ -187,16 +187,14 @@ function App() {
           c.style.position === 'absolute'
       );
 
-      if (fistEditableElementWithAbsolute) {
+      if (draggableElement) {
         const nextAbsoluteElement = e.path.find(
           (c: HTMLElement) =>
-            c !== fistEditableElementWithAbsolute &&
-            c.style &&
-            c.style.position === 'absolute'
+            c !== draggableElement && c.style && c.style.position === 'absolute'
         );
-        const fistEditableElementWithAbsoluteOffset = getOffsetBetween(
+        const draggableElementOffset = getOffsetBetween(
           e.target,
-          fistEditableElementWithAbsolute
+          draggableElement
         );
         const nextAbsoluteElementPosition =
           nextAbsoluteElement && getOffsetBetween(nextAbsoluteElement, 0);
@@ -204,21 +202,27 @@ function App() {
           offsetX: e.offsetX,
           offsetY: e.offsetY,
         };
+        const { marginLeft, marginTop } = getComputedStyle(draggableElement);
+        const draggableElementMargins = {
+          marginLeft: +marginLeft.replace('px', '') || 0,
+          marginTop: +marginTop.replace('px', '') || 0,
+        };
 
         draggingElementInfo = {
-          fistEditableElementWithAbsolute,
-          fistEditableElementWithAbsoluteOffset,
+          draggableElement,
+          draggableElementOffset,
+          draggableElementMargins,
           nextAbsoluteElementPosition,
           targetOffset,
         };
       }
 
-      if (fistEditableElement) {
+      if (firstEditableElement) {
         if (selected.current) {
           selected.current.classList.remove('selected');
         }
-        fistEditableElement.classList.add('selected');
-        selected.current = fistEditableElement;
+        firstEditableElement.classList.add('selected');
+        selected.current = firstEditableElement;
       } else if (selected.current) {
         selected.current.classList.remove('selected');
         selected.current = null;
@@ -237,10 +241,8 @@ function App() {
         }
       }
 
-      if (draggingElementInfo?.fistEditableElementWithAbsolute) {
-        draggingElementInfo.fistEditableElementWithAbsolute.classList.remove(
-          'hovered'
-        );
+      if (draggingElementInfo?.draggableElement) {
+        draggingElementInfo.draggableElement.classList.remove('hovered');
       }
       draggingElementInfo = null;
       forceUpdate();
@@ -263,11 +265,55 @@ function App() {
     };
     getWindow().onmousemove = (e: any) => {
       const {
-        fistEditableElementWithAbsolute: draggableElement,
-        fistEditableElementWithAbsoluteOffset: draggableElementOffset = {},
-        nextAbsoluteElementPosition,
+        draggableElement,
+        draggableElementOffset = {},
+        draggableElementMargins,
+        nextAbsoluteElementPosition = {},
         targetOffset,
       } = draggingElementInfo || {};
+
+      if (draggableElement) {
+        e.preventDefault();
+        const { pageX, pageY, movementX, movementY } = e;
+
+        if (draggableElement.style.position === 'absolute') {
+          const {
+            offsetX: nextAbsoluteElementPositionX = 0,
+            offsetY: nextAbsoluteElementPositionY = 0,
+          } = nextAbsoluteElementPosition;
+          const {
+            offsetX: draggableElementOffsetX = 0,
+            offsetY: draggableElementOffsetY = 0,
+          } = draggableElementOffset;
+          const { offsetX: targetOffsetX, offsetY: targetOffsetY } =
+            targetOffset;
+          const { marginLeft, marginTop } = draggableElementMargins;
+
+          draggableElement.style.left =
+            pageX -
+            nextAbsoluteElementPositionX -
+            draggableElementOffsetX -
+            targetOffsetX -
+            marginLeft +
+            'px';
+          draggableElement.style.top =
+            pageY -
+            nextAbsoluteElementPositionY -
+            draggableElementOffsetY -
+            targetOffsetY -
+            marginTop +
+            'px';
+
+          draggableElement.classList.add('hovered');
+        } else if (draggableElement.style.position === 'relative') {
+          const cx = +draggableElement.style.left.replace('px', '');
+          const cy = +draggableElement.style.top.replace('px', '');
+
+          draggableElement.style.left = cx + movementX + 'px';
+          draggableElement.style.top = cy + movementY + 'px';
+        }
+      }
+
       const maintarget = e.path.find(
         (c: any) => c.hasAttribute && c.hasAttribute('editable')
       );
@@ -281,51 +327,6 @@ function App() {
       } else if (hovered.current) {
         hovered.current.classList.remove('hovered');
         hovered.current = null;
-      }
-
-      if (draggableElement) {
-        e.preventDefault();
-        const { pageX, pageY, movementX, movementY } = e;
-
-        if (draggableElement.style.position === 'relative') {
-          const cx = +draggableElement.style.left.replace('px', '');
-          const cy = +draggableElement.style.top.replace('px', '');
-
-          draggableElement.style.left = cx + movementX + 'px';
-          draggableElement.style.top = cy + movementY + 'px';
-        } else if (draggableElement) {
-          const {
-            offsetX: firstEditableOffsetX = 0,
-            offsetY: firstEditableOffsetY = 0,
-          } = draggableElementOffset;
-          const { offsetX: targetOffsetX, offsetY: targetOffsetY } =
-            targetOffset;
-          const marginX =
-            +getComputedStyle(draggableElement).marginLeft.replace('px', '') ||
-            0;
-          const marginY =
-            +getComputedStyle(draggableElement).marginTop.replace('px', '') ||
-            0;
-
-          draggableElement.classList.add('hovered');
-
-          if (nextAbsoluteElementPosition) {
-            const {
-              offsetX: firstAbsoluteOffsetX,
-              offsetY: firstAbsoluteOffsetY,
-            } = nextAbsoluteElementPosition;
-
-            draggableElement.style.left =
-              pageX - firstAbsoluteOffsetX - targetOffsetX - marginX + 'px';
-            draggableElement.style.top =
-              pageY - firstAbsoluteOffsetY - targetOffsetY - marginY + 'px';
-          } else {
-            draggableElement.style.left =
-              pageX - firstEditableOffsetX - targetOffsetX - marginX + 'px';
-            draggableElement.style.top =
-              pageY - firstEditableOffsetY - targetOffsetY - marginY + 'px';
-          }
-        }
       }
     };
 
