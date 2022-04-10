@@ -52,7 +52,7 @@ function getNodeTree(el: HTMLElement): any {
 
 function App() {
   const selected = useRef<HTMLElement | null>(null);
-  const hovered = useRef<any>(null);
+  const hovered = useRef<HTMLElement | null>(null);
   const [contextMenu, setContextMenu] = useState<any>({ current: null });
   const iframe = useRef<any>();
   const getDocument = () => iframe.current.contentDocument;
@@ -176,9 +176,6 @@ function App() {
     let draggingElementInfo: any = null;
 
     getWindow().onmousedown = (e: any) => {
-      const firstEditableElement = e.path.find(
-        (c: any) => c.hasAttribute && c.hasAttribute('editable')
-      );
       const draggableElement = e.path.find(
         (c: any) =>
           c.hasAttribute &&
@@ -217,12 +214,16 @@ function App() {
         };
       }
 
+      const firstEditableElement = e.path.find(
+        (c: any) => c.hasAttribute && c.hasAttribute('editable')
+      );
+
       if (firstEditableElement) {
         if (selected.current) {
           selected.current.classList.remove('selected');
         }
-        firstEditableElement.classList.add('selected');
         selected.current = firstEditableElement;
+        selected.current?.classList.add('selected');
       } else if (selected.current) {
         selected.current.classList.remove('selected');
         selected.current = null;
@@ -314,16 +315,16 @@ function App() {
         }
       }
 
-      const maintarget = e.path.find(
+      const firstEditableElement = e.path.find(
         (c: any) => c.hasAttribute && c.hasAttribute('editable')
       );
 
-      if (maintarget) {
+      if (firstEditableElement) {
         if (hovered.current) {
           hovered.current.classList.remove('hovered');
         }
-        maintarget.classList.add('hovered');
-        hovered.current = maintarget;
+        hovered.current = firstEditableElement;
+        hovered.current?.classList.add('hovered');
       } else if (hovered.current) {
         hovered.current.classList.remove('hovered');
         hovered.current = null;
