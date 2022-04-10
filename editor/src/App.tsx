@@ -151,17 +151,9 @@ function App() {
     const selectedElementPosition = nextAbsoluteElement
       ? getOffsetBetween(selected.current, nextAbsoluteElement)
       : getOffsetBetween(selected.current, 0);
-    const newElement = getDocument().createElement('div');
-
-    newElement.style.width = selectedElementStyles.width;
-    newElement.style.height = selectedElementStyles.height;
-    newElement.style.margin = selectedElementStyles.margin;
-    newElement.style.flexShrink = '0';
 
     selected.current.style.width = selectedElementStyles.width;
     selected.current.style.height = selectedElementStyles.height;
-
-    selected.current.parentNode?.insertBefore(newElement, selected.current);
     selected.current.style.position = 'absolute';
 
     selectedElementStyles = getComputedStyle(selected.current);
