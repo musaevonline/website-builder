@@ -25,63 +25,14 @@ const useForceUpdate = () => {
   return forceRender;
 };
 
-const getDomPath = (el: HTMLElement) => {
-  const stack = [];
-  let currentElement = el;
-
-  while (currentElement.parentElement !== null) {
-    stack.push(currentElement);
-    currentElement = currentElement.parentElement;
-  }
-
-  return stack;
-};
-
-function getNodeTree(el: HTMLElement): any {
-  const children = [];
-
-  for (let j = 0; j < el.children.length; j++) {
-    children.push(getNodeTree(el.children[j] as HTMLElement));
-  }
-
-  return {
-    el,
-    children,
-  };
-}
-
 function App() {
   const selected = useRef<HTMLElement | null>(null);
   const hovered = useRef<HTMLElement | null>(null);
+  const draggable = useRef<HTMLElement | null>(null);
   const [contextMenu, setContextMenu] = useState<any>({ current: null });
   const iframe = useRef<any>();
   const getDocument = () => iframe.current.contentDocument;
   const getWindow = () => iframe.current.contentWindow;
-
-  const getOffsetBetween = (el1: HTMLElement | 0, el2: HTMLElement | 0) => {
-    type TRect = Pick<DOMRect, 'x' | 'y'>;
-    const rect1: TRect = { x: 0, y: 0 };
-    const rect2: TRect = { x: 0, y: 0 };
-
-    if (el1 !== 0) {
-      const clientRect = el1.getBoundingClientRect();
-
-      rect1.x = clientRect.x + getWindow().scrollX;
-      rect1.y = clientRect.y + getWindow().scrollY;
-    }
-
-    if (el2 !== 0) {
-      const clientRect = el2.getBoundingClientRect();
-
-      rect2.x = clientRect.x + getWindow().scrollX;
-      rect2.y = clientRect.y + getWindow().scrollY;
-    }
-
-    return {
-      offsetX: rect1.x - rect2.x,
-      offsetY: rect1.y - rect2.y,
-    };
-  };
 
   const handleContextMenu = (event: any) => {
     event.preventDefault();
@@ -116,102 +67,22 @@ function App() {
     return !!getComputedStyle(selected.current)[name];
   };
 
-  const onMakeDraggable = () => {
-    if (!selected.current || selected.current.style.position === 'absolute') {
-      return;
-    }
-    selected.current
-      .querySelectorAll<HTMLElement>('*')
-      .forEach((selectedElementChild) => {
-        if (!selected.current) {
-          return;
-        }
-
-        if (selectedElementChild.style.position === 'absolute') {
-          const { offsetX, offsetY } = getOffsetBetween(
-            selectedElementChild,
-            selected.current
-          );
-          const selectedElementStyles = getComputedStyle(selectedElementChild);
-          const marginX =
-            +selectedElementStyles.marginLeft.replace('px', '') || 0;
-          const marginY =
-            +selectedElementStyles.marginTop.replace('px', '') || 0;
-
-          selectedElementChild.style.left = offsetX - marginX + 'px';
-          selectedElementChild.style.top = offsetY - marginY + 'px';
-        }
-      });
-
-    const nextAbsoluteElement = getDomPath(selected.current)
-      .slice(1)
-      .find((c: HTMLElement) => c.style && c.style.position === 'absolute');
-
-    let selectedElementStyles = getComputedStyle(selected.current);
-    const selectedElementPosition = nextAbsoluteElement
-      ? getOffsetBetween(selected.current, nextAbsoluteElement)
-      : getOffsetBetween(selected.current, 0);
-
-    selected.current.style.width = selectedElementStyles.width;
-    selected.current.style.height = selectedElementStyles.height;
-    selected.current.style.position = 'absolute';
-
-    selectedElementStyles = getComputedStyle(selected.current);
-    const marginX = +selectedElementStyles.marginLeft.replace('px', '') || 0;
-    const marginY = +selectedElementStyles.marginTop.replace('px', '') || 0;
-
-    selected.current.style.left =
-      selectedElementPosition.offsetX - marginX + 'px';
-    selected.current.style.top =
-      selectedElementPosition.offsetY - marginY + 'px';
-
-    forceUpdate();
-  };
-
   useEffect(() => {
     if (!iframe) {
       return;
     }
 
-    let draggingElementInfo: any = null;
-
     getWindow().onmousedown = (e: any) => {
-      const draggableElement = e.path.find(
-        (c: any) =>
-          c.hasAttribute &&
-          c.hasAttribute('editable') &&
-          c.style &&
-          c.style.position === 'absolute'
+      const firstDraggableElement = e.path.find(
+        (el: any) =>
+          el.hasAttribute &&
+          el.hasAttribute('editable') &&
+          el.style &&
+          (el.style.position === 'absolute' || el.style.position === 'relative')
       );
 
-      if (draggableElement) {
-        const nextAbsoluteElement = e.path.find(
-          (c: HTMLElement) =>
-            c !== draggableElement && c.style && c.style.position === 'absolute'
-        );
-        const draggableElementOffset = getOffsetBetween(
-          e.target,
-          draggableElement
-        );
-        const nextAbsoluteElementPosition =
-          nextAbsoluteElement && getOffsetBetween(nextAbsoluteElement, 0);
-        const targetOffset = {
-          offsetX: e.offsetX,
-          offsetY: e.offsetY,
-        };
-        const { marginLeft, marginTop } = getComputedStyle(draggableElement);
-        const draggableElementMargins = {
-          marginLeft: +marginLeft.replace('px', '') || 0,
-          marginTop: +marginTop.replace('px', '') || 0,
-        };
-
-        draggingElementInfo = {
-          draggableElement,
-          draggableElementOffset,
-          draggableElementMargins,
-          nextAbsoluteElementPosition,
-          targetOffset,
-        };
+      if (firstDraggableElement) {
+        draggable.current = firstDraggableElement;
       }
 
       const firstEditableElement = e.path.find(
@@ -230,22 +101,10 @@ function App() {
       }
     };
     getWindow().onmouseup = () => {
-      const scriptID =
-        selected.current && selected.current.getAttribute('script-id');
-
-      if (scriptID) {
-        const script = getDocument().getElementById(scriptID);
-
-        if (script && selected.current) {
-          script.style.left = selected.current.offsetLeft + 'px';
-          script.style.top = selected.current.offsetTop + 'px';
-        }
+      if (draggable.current) {
+        draggable.current.classList.remove('hovered');
       }
-
-      if (draggingElementInfo?.draggableElement) {
-        draggingElementInfo.draggableElement.classList.remove('hovered');
-      }
-      draggingElementInfo = null;
+      draggable.current = null;
       forceUpdate();
     };
     getWindow().onmouseout = function (e: any) {
@@ -256,63 +115,18 @@ function App() {
           hovered.current.classList.remove('hovered');
           hovered.current = null;
         }
-
-        if (draggingElementInfo?.fistEditableElementWithAbsolute) {
-          draggingElementInfo.fistEditableElementWithAbsolute.classList.remove(
-            'hovered'
-          );
-        }
       }
     };
     getWindow().onmousemove = (e: any) => {
-      const {
-        draggableElement,
-        draggableElementOffset = {},
-        draggableElementMargins,
-        nextAbsoluteElementPosition = {},
-        targetOffset,
-      } = draggingElementInfo || {};
-
-      if (draggableElement) {
+      if (draggable.current) {
         e.preventDefault();
-        const { pageX, pageY, movementX, movementY } = e;
+        const { movementX, movementY } = e;
 
-        if (draggableElement.style.position === 'absolute') {
-          const {
-            offsetX: nextAbsoluteElementPositionX = 0,
-            offsetY: nextAbsoluteElementPositionY = 0,
-          } = nextAbsoluteElementPosition;
-          const {
-            offsetX: draggableElementOffsetX = 0,
-            offsetY: draggableElementOffsetY = 0,
-          } = draggableElementOffset;
-          const { offsetX: targetOffsetX, offsetY: targetOffsetY } =
-            targetOffset;
-          const { marginLeft, marginTop } = draggableElementMargins;
+        const cx = +draggable.current.style.left.replace('px', '');
+        const cy = +draggable.current.style.top.replace('px', '');
 
-          draggableElement.style.left =
-            pageX -
-            nextAbsoluteElementPositionX -
-            draggableElementOffsetX -
-            targetOffsetX -
-            marginLeft +
-            'px';
-          draggableElement.style.top =
-            pageY -
-            nextAbsoluteElementPositionY -
-            draggableElementOffsetY -
-            targetOffsetY -
-            marginTop +
-            'px';
-
-          draggableElement.classList.add('hovered');
-        } else if (draggableElement.style.position === 'relative') {
-          const cx = +draggableElement.style.left.replace('px', '');
-          const cy = +draggableElement.style.top.replace('px', '');
-
-          draggableElement.style.left = cx + movementX + 'px';
-          draggableElement.style.top = cy + movementY + 'px';
-        }
+        draggable.current.style.left = cx + movementX / 2 + 'px';
+        draggable.current.style.top = cy + movementY / 2 + 'px';
       }
 
       const firstEditableElement = e.path.find(
@@ -349,50 +163,15 @@ function App() {
       getDocument().head.appendChild(vendors);
       getWindow().TEMPLATES = {};
       getWindow().STORE = {};
+      getDocument()
+        .body.querySelectorAll('*')
+        .forEach((el: HTMLElement) => {
+          const elStyles = getWindow().getComputedStyle(el);
 
-      const tree = getNodeTree(getDocument().body);
-      let treeAsArray: any = [];
-
-      treeAsArray = treeAsArray.concat(tree.children);
-      let node;
-
-      const allChanges: any = [];
-
-      while ((node = treeAsArray.shift())) {
-        const { el } = node;
-        const elStyles = getComputedStyle(el);
-
-        if (elStyles.display === 'none') {
-          continue;
-        }
-
-        const { offsetX, offsetY } = getOffsetBetween(
-          el,
-          el.parentElement || 0
-        );
-
-        allChanges.push({
-          el,
-          changes: {
-            left: offsetX + 'px',
-            top: (el.style.top = offsetY + 'px'),
-            width: elStyles.width,
-            height: elStyles.height,
-          },
+          if (elStyles.position === 'static') {
+            el.style.position = 'relative';
+          }
         });
-        treeAsArray = treeAsArray.concat(node.children);
-      }
-
-      allChanges.forEach(({ el, changes }: any) => {
-        const { left, top, width, height } = changes;
-
-        el.style.left = left;
-        el.style.top = top;
-        el.style.width = width;
-        el.style.height = height;
-        el.style.setProperty('margin', 'unset', 'important');
-        el.style.position = 'absolute';
-      });
     };
   }, []);
 
@@ -481,11 +260,7 @@ function App() {
           height="100vh"
           sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
         >
-          <StyleFields
-            styles={styles || []}
-            onAddStyle={addStyleToSelected}
-            onMakeDraggable={onMakeDraggable}
-          />
+          <StyleFields styles={styles || []} onAddStyle={addStyleToSelected} />
           {selectedScriptID && (
             <>
               <Typography>ID: {selectedScriptID}</Typography>
