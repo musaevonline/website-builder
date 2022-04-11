@@ -1,11 +1,13 @@
 import { Grid, Box, Menu, MenuItem, Typography, Divider } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
-import React, { useReducer } from 'react';
+import React from 'react';
 import { v4 as uuid } from 'uuid';
 
 import NestedMenuItem from './NestedMenuItem';
 import { PropsFields } from './components/PropsFields';
+import { SettingsTool } from './components/SettingsTool';
 import { StyleFields } from './components/StyleFields';
+import { useForceRender } from './components/hooks';
 import './App.css';
 
 const NestedMenuItem2: any = NestedMenuItem;
@@ -18,12 +20,6 @@ declare global {
     PLUGINS: any;
   }
 }
-
-const useForceUpdate = () => {
-  const [, forceRender] = useReducer((s) => s + 1, 0);
-
-  return forceRender;
-};
 
 function App() {
   const selected = useRef<HTMLElement | null>(null);
@@ -44,7 +40,7 @@ function App() {
     });
   };
 
-  const forceUpdate = useForceUpdate();
+  const forceRender = useForceRender();
   const addStyleToSelected = ({ name, value }: any) => {
     if (
       !selected.current ||
@@ -62,7 +58,7 @@ function App() {
         script.style[name] = value;
       }
     }
-    forceUpdate();
+    forceRender();
 
     return !!getComputedStyle(selected.current)[name];
   };
@@ -105,7 +101,7 @@ function App() {
         draggable.current.classList.remove('hovered');
       }
       draggable.current = null;
-      forceUpdate();
+      forceRender();
     };
     getWindow().onmouseout = function (e: any) {
       const from = e.relatedTarget || e.toElement;
@@ -237,7 +233,7 @@ function App() {
     selectedScriptID && iframe.current.contentWindow?.STORE?.[selectedScriptID];
   const onSave = (prop: any, value: any) => {
     props[prop] = value;
-    forceUpdate();
+    forceRender();
 
     return true;
   };
@@ -250,7 +246,7 @@ function App() {
       props['$' + key] = value;
     }
     delete props[key];
-    forceUpdate();
+    forceRender();
   };
 
   return (
@@ -258,8 +254,9 @@ function App() {
       <Grid item xs={3} sx={{ padding: 1, paddingLeft: 0 }}>
         <Box
           height="100vh"
-          sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+          sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
         >
+          {selected.current && <SettingsTool selected={selected.current} />}
           <StyleFields styles={styles || []} onAddStyle={addStyleToSelected} />
           {selectedScriptID && (
             <>
