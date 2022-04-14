@@ -7,6 +7,7 @@ import NestedMenuItem from './NestedMenuItem';
 import { PropsFields } from './components/PropsFields';
 import { SettingsTool } from './components/SettingsTool';
 import { StyleFields } from './components/StyleFields';
+import { TreeView } from './components/TreeView/TreeView';
 import { useForceRender } from './components/hooks';
 import './App.css';
 
@@ -27,8 +28,8 @@ function App() {
   const draggable = useRef<HTMLElement | null>(null);
   const [contextMenu, setContextMenu] = useState<any>({ current: null });
   const iframe = useRef<any>();
-  const getDocument = () => iframe.current.contentDocument;
-  const getWindow = () => iframe.current.contentWindow;
+  const getDocument = () => iframe?.current?.contentDocument;
+  const getWindow = () => iframe?.current?.contentWindow;
 
   const handleContextMenu = (event: any) => {
     event.preventDefault();
@@ -168,6 +169,7 @@ function App() {
             el.style.position = 'relative';
           }
         });
+      forceRender();
     };
   }, []);
 
@@ -249,6 +251,27 @@ function App() {
     forceRender();
   };
 
+  const handleChangeSelected = (newSelected: HTMLElement) => {
+    if (selected.current) {
+      selected.current.classList.remove('selected');
+    }
+
+    selected.current = newSelected;
+    selected.current?.classList.add('selected');
+    selected.current.scrollIntoView({ behavior: 'smooth' });
+    forceRender();
+  };
+
+  const handleChangeHovered = (newHovered: HTMLElement) => {
+    if (hovered.current) {
+      hovered.current.classList.remove('hovered');
+    }
+
+    hovered.current = newHovered;
+    hovered.current?.classList.add('hovered');
+  };
+  const rootNode = getDocument()?.body;
+
   return (
     <Grid container sx={{ height: '100vh' }}>
       <Grid item xs={3} sx={{ padding: 1, paddingLeft: 0 }}>
@@ -256,6 +279,14 @@ function App() {
           height="100vh"
           sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
         >
+          {rootNode && (
+            <TreeView
+              rootNode={rootNode}
+              selected={selected.current}
+              onChangeSelected={handleChangeSelected}
+              onChangeHovered={handleChangeHovered}
+            />
+          )}
           {selected.current && <SettingsTool selected={selected.current} />}
           <StyleFields styles={styles || []} onAddStyle={addStyleToSelected} />
           {selectedScriptID && (

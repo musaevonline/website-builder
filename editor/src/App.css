@@ -36,3 +36,10 @@
     transform: rotate(360deg);
   }
 }
+
+.ant-tree-indent-unit {
+  width: 10px;
+}
+.ant-tree-switcher {
+  width: 8px;
+}
