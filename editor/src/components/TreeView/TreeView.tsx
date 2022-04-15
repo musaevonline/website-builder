@@ -40,11 +40,18 @@ interface ITreeViewProps {
   selected: HTMLElement | null;
   onChangeSelected: (newSelected: HTMLElement) => void;
   onChangeHovered: (newHovered: HTMLElement) => void;
+  onRightClick: (props: any) => void;
 }
 
 export const TreeView: React.FC<ITreeViewProps> = (props) => {
   const forceRender = useForceRender();
-  const { rootNode, selected, onChangeSelected, onChangeHovered } = props;
+  const {
+    rootNode,
+    selected,
+    onChangeSelected,
+    onChangeHovered,
+    onRightClick,
+  } = props;
   const treeRef = useRef<any>();
   const [expandedKeys, setExpandedKeys] = useState<any>([]);
 
@@ -103,6 +110,13 @@ export const TreeView: React.FC<ITreeViewProps> = (props) => {
     onChangeHovered(domNode);
   };
 
+  const handleRightClick = ({ event, node }: any) => {
+    const { clientX, clientY } = event as React.MouseEvent<Element, MouseEvent>;
+    const { domNode } = node as IDataNode;
+
+    onRightClick({ x: clientX, y: clientY, parentNode: domNode });
+  };
+
   const domTree = [getNodeTree(rootNode)] as IDataNode[];
   const selectedKeys = selected ? [treeMap.get(selected).key] : [];
 
@@ -121,6 +135,7 @@ export const TreeView: React.FC<ITreeViewProps> = (props) => {
       height={500}
       onSelect={handleChangeSelected}
       onMouseEnter={handleChangeHovered}
+      onRightClick={handleRightClick}
     />
   );
 };

@@ -35,8 +35,8 @@ function App() {
     event.preventDefault();
     setContextMenu({
       current: {
-        mouseX: event.clientX,
-        mouseY: event.clientY,
+        mouseX: event.clientX + iframe.current?.offsetLeft,
+        mouseY: event.clientY + iframe.current?.offsetTop,
       },
     });
   };
@@ -183,9 +183,7 @@ function App() {
 
     if (templateSrc) {
       const html = await fetch(templateSrc).then((res) => res.text());
-      const { mouseX, mouseY } = contextMenu.current;
-      const x = mouseX - getDocument().body.offsetLeft;
-      const y = mouseY + getWindow().scrollY;
+      const { mouseX, mouseY, parentNode } = contextMenu.current;
       const parser = new DOMParser();
 
       const rootNode = parser
@@ -194,10 +192,20 @@ function App() {
       const root = rootNode.body.firstElementChild as HTMLElement;
 
       root.setAttribute('editable', 'true');
-      root.style.position = 'absolute';
-      root.style.left = x + 'px';
-      root.style.top = y + 'px';
-      getDocument().body.appendChild(root);
+
+      if (parentNode) {
+        root.style.position = 'relative';
+        parentNode.appendChild(root);
+      } else {
+        const x = mouseX - iframe.current?.offsetLeft;
+        const y = mouseY - iframe.current?.offsetTop + getWindow().scrollY;
+
+        root.style.position = 'absolute';
+        root.style.left = x + 'px';
+        root.style.top = y + 'px';
+        getDocument().body.appendChild(root);
+      }
+
       template = root;
     }
 
@@ -272,12 +280,27 @@ function App() {
   };
   const rootNode = getDocument()?.body;
 
+  const handleRightClick = ({ x, y, parentNode }: any) => {
+    setContextMenu({
+      current: {
+        mouseX: x,
+        mouseY: y,
+        parentNode,
+      },
+    });
+  };
+
   return (
     <Grid container sx={{ height: '100vh' }}>
       <Grid item xs={3} sx={{ padding: 1, paddingLeft: 0 }}>
         <Box
           height="100vh"
-          sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1,
+            overflowY: 'auto',
+          }}
         >
           {rootNode && (
             <TreeView
@@ -285,6 +308,7 @@ function App() {
               selected={selected.current}
               onChangeSelected={handleChangeSelected}
               onChangeHovered={handleChangeHovered}
+              onRightClick={handleRightClick}
             />
           )}
           {selected.current && <SettingsTool selected={selected.current} />}
@@ -295,11 +319,13 @@ function App() {
               <Divider />
             </>
           )}
-          <PropsFields
-            props={props || []}
-            onSave={onSave}
-            toggleJSMode={toggleJSMode}
-          />
+          <Box sx={{ maxHeight: 500, overflowY: 'auto', flexShrink: 0 }}>
+            <PropsFields
+              props={props || []}
+              onSave={onSave}
+              toggleJSMode={toggleJSMode}
+            />
+          </Box>
         </Box>
       </Grid>
       <Grid item xs={9} sx={{ overflow: 'auto' }}>
@@ -325,7 +351,7 @@ function App() {
           contextMenu.current !== null
             ? {
                 top: contextMenu.current.mouseY,
-                left: contextMenu.current.mouseX + iframe.current?.offsetLeft,
+                left: contextMenu.current.mouseX,
               }
             : undefined
         }
