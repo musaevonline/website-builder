@@ -4,10 +4,10 @@ import React from 'react';
 import { v4 as uuid } from 'uuid';
 
 import NestedMenuItem from './NestedMenuItem';
+import { DomTree } from './components/DomTree';
 import { PropsFields } from './components/PropsFields';
 import { SettingsTool } from './components/SettingsTool';
 import { StyleFields } from './components/StyleFields';
-import { TreeView } from './components/TreeView/TreeView';
 import { useForceRender } from './components/hooks';
 import './App.css';
 
@@ -303,7 +303,7 @@ function App() {
           }}
         >
           {rootNode && (
-            <TreeView
+            <DomTree
               rootNode={rootNode}
               selected={selected.current}
               onChangeSelected={handleChangeSelected}
