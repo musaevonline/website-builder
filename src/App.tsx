@@ -330,7 +330,7 @@ function App() {
       </Grid>
       <Grid item xs={9} sx={{ overflow: 'auto' }}>
         <iframe
-          src="/site/index.html"
+          src="/index.html"
           width="100%"
           height="100%"
           ref={iframe}
