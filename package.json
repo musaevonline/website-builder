@@ -107,8 +107,8 @@
     "prettier": "^2.2.1"
   },
   "scripts": {
-    "start": "PUBLIC_URL=editor ESLINT_NO_DEV_ERRORS=true node scripts/start.js",
-    "build": "node scripts/build.js",
+    "start": "PUBLIC_URL=/editor ESLINT_NO_DEV_ERRORS=true node scripts/start.js",
+    "build": "PUBLIC_URL=/editor BUILD_PATH='build/editor' node scripts/build.js && cp -R website server.js startProd.js build",
     "plugins": "webpack",
     "test": "node scripts/test.js"
   },
