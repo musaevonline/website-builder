@@ -71,6 +71,7 @@
     "react-dom": "^17.0.2",
     "react-draggable": "^4.4.4",
     "react-refresh": "^0.8.3",
+    "react-router-dom": "^6.3.0",
     "resolve": "1.18.1",
     "resolve-url-loader": "^3.1.2",
     "sass-loader": "^10.0.5",
@@ -92,6 +93,7 @@
     "workbox-webpack-plugin": "5.1.4"
   },
   "devDependencies": {
+    "@types/react-dom": "^18.0.1",
     "@typescript-eslint/eslint-plugin": "^4.14.1",
     "@typescript-eslint/parser": "^4.14.1",
     "eslint": "^7.18.0",
