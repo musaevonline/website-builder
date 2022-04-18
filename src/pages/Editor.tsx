@@ -191,6 +191,7 @@ export const Editor = () => {
     fetch('/editor/plugins.json')
       .then((res) => res.json())
       .then((plugins) => setPlugins(plugins));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const newPlugin = async (plugin: any) => {
