@@ -27,6 +27,8 @@ function App() {
   const hovered = useRef<HTMLElement | null>(null);
   const draggable = useRef<HTMLElement | null>(null);
   const [contextMenu, setContextMenu] = useState<any>({ current: null });
+  const [plugins, setPlugins] = useState<any[]>([]);
+
   const iframe = useRef<any>();
   const getDocument = () => iframe?.current?.contentDocument;
   const getWindow = () => iframe?.current?.contentWindow;
@@ -169,8 +171,25 @@ function App() {
             el.style.position = 'relative';
           }
         });
+
+      const styleElement = getDocument().createElement('style');
+
+      styleElement.type = 'text/css';
+      styleElement.innerHTML = `
+        .hovered {
+          outline: #82ffff solid 2px !important;
+        }
+        .selected {
+          outline: #82c7ff solid 2px !important;
+        }
+      `;
+      getDocument().head.appendChild(styleElement);
       forceRender();
     };
+
+    fetch('/editor/plugins.json')
+      .then((res) => res.json())
+      .then((plugins) => setPlugins(plugins));
   }, []);
 
   const newPlugin = async (plugin: any) => {
@@ -357,7 +376,7 @@ function App() {
         }
       >
         <NestedMenuItem2 label="Insert" parentMenuOpen={!!contextMenu.current}>
-          {Object.entries(window.PLUGINS).map(([pluginName, plugin]) => (
+          {Object.entries(plugins).map(([pluginName, plugin]) => (
             <MenuItem key={pluginName} onClick={() => newPlugin(plugin)}>
               {pluginName}
             </MenuItem>

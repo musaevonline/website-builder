@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 const path = require('path');
-
+const fs = require('fs')
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const globby = require('globby');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -74,6 +74,7 @@ groupScripts.forEach((input) => {
   }
 });
 
+fs.writeFileSync('../public/plugins.json', JSON.stringify(plugins, null, "\t"))
 console.log(plugins);
 
 module.exports = (env = {}) => {
@@ -81,7 +82,7 @@ module.exports = (env = {}) => {
     mode: 'development',
     entry,
     output: {
-      path: path.resolve(__dirname, '../public'),
+      path: path.resolve(__dirname, '../website'),
       filename: 'plugins/[name]',
       chunkFilename: 'plugins/[name]',
     },
@@ -109,18 +110,9 @@ module.exports = (env = {}) => {
         patterns: [
           {
             from: '*/template.html',
-            to: '../public/plugins',
+            to: '../website/plugins',
           },
         ],
-      }),
-      new HtmlWebpackPlugin({
-        template: 'index.ejs',
-        filename: 'index.html',
-        inject: false,
-        minify: false,
-        templateParameters: {
-          plugins,
-        },
       }),
       new BundleAnalyzerPlugin(),
     ],
