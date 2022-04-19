@@ -1,4 +1,4 @@
-const setupServer = require('../server');
+const setupServer = require('../setupServer');
 
 module.exports = (app) => {
   setupServer(app);
