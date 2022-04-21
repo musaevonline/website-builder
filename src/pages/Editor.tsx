@@ -7,6 +7,7 @@ import { v4 as uuid } from 'uuid';
 import NestedMenuItem from '../NestedMenuItem';
 import { DomTree } from '../components/DomTree';
 import { PropsFields } from '../components/PropsFields';
+import { SaveButton } from '../components/SaveButton';
 import { SettingsTool } from '../components/SettingsTool';
 import { StyleFields } from '../components/StyleFields';
 import { useForceRender } from '../components/hooks';
@@ -147,22 +148,23 @@ export const Editor = () => {
 
     /** IFRAME LOADED HANDLER */
     iframe.current.onload = () => {
+      getWindow().TEMPLATES = {};
+      getWindow().STORE = {};
       getDocument().body.oncontextmenu = handleContextMenu;
+
+      const vendors = getDocument().createElement('script');
+
+      vendors.setAttribute('src', '/plugins/vendors.js');
+      vendors.setAttribute('defer', 'true');
+      getDocument().head.appendChild(vendors);
+
       getDocument()
-        .body.querySelectorAll('*')
+        .querySelectorAll('*')
         .forEach(function (node: any) {
           node.setAttribute('editable', 'true');
           node.setAttribute('exportable', 'true');
         });
 
-      const vendors = getDocument().createElement('script');
-
-      vendors.setAttribute('src', '/plugins/vendors.js');
-      vendors.setAttribute('exportable', 'true');
-      vendors.setAttribute('defer', 'true');
-      getDocument().head.appendChild(vendors);
-      getWindow().TEMPLATES = {};
-      getWindow().STORE = {};
       getDocument()
         .body.querySelectorAll('*')
         .forEach((el: HTMLElement) => {
@@ -385,6 +387,10 @@ export const Editor = () => {
           ))}
         </NestedMenuItem2>
       </Menu>
+      <SaveButton
+        sx={{ position: 'fixed', bottom: 16, right: 16 }}
+        getDocument={getDocument}
+      />
     </Grid>
   );
 };
