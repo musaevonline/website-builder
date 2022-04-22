@@ -1,17 +1,17 @@
-import * as React from 'react';
-import ReactDOM from "react-dom";
 import Box from '@mui/material/Box';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import StepContent from '@mui/material/StepContent';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
+import Step from '@mui/material/Step';
+import StepContent from '@mui/material/StepContent';
+import StepLabel from '@mui/material/StepLabel';
+import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
+import * as React from 'react';
+import ReactDOM from 'react-dom';
 
-const SCRIPT = document.currentScript
-const SCRIPT_ID = SCRIPT.getAttribute('id')
-const TEMPLATE = window.TEMPLATES[SCRIPT_ID]
+const SCRIPT = document.currentScript;
+const SCRIPT_ID = SCRIPT.getAttribute('id');
+const TEMPLATE = document.querySelector(`[script-id="${SCRIPT_ID}"]`);
 
 const steps = [
   {

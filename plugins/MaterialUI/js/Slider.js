@@ -1,12 +1,12 @@
-import * as React from 'react';
-import ReactDOM from "react-dom";
 import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
 import Slider from '@mui/material/Slider';
+import Stack from '@mui/material/Stack';
+import * as React from 'react';
+import ReactDOM from 'react-dom';
 
-const SCRIPT = document.currentScript
-const SCRIPT_ID = SCRIPT.getAttribute('id')
-const TEMPLATE = window.TEMPLATES[SCRIPT_ID]
+const SCRIPT = document.currentScript;
+const SCRIPT_ID = SCRIPT.getAttribute('id');
+const TEMPLATE = document.querySelector(`[script-id="${SCRIPT_ID}"]`);
 
 export default function ContinuousSlider() {
   const [value, setValue] = React.useState(30);

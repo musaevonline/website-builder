@@ -1,15 +1,15 @@
-import * as React from 'react';
-import ReactDOM from 'react-dom';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import * as React from 'react';
+import ReactDOM from 'react-dom';
 
-const SCRIPT = document.currentScript
-const SCRIPT_ID = SCRIPT.getAttribute('id')
-const TEMPLATE = window.TEMPLATES[SCRIPT_ID]
+const SCRIPT = document.currentScript;
+const SCRIPT_ID = SCRIPT.getAttribute('id');
+const TEMPLATE = document.querySelector(`[script-id="${SCRIPT_ID}"]`);
 
 const bull = (
   <Box

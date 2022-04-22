@@ -1,17 +1,17 @@
-import * as React from 'react';
-import ReactDOM from "react-dom";
 import Timeline from '@mui/lab/Timeline';
-import TimelineItem from '@mui/lab/TimelineItem';
-import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
-import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import TimelineDot from '@mui/lab/TimelineDot';
+import TimelineItem from '@mui/lab/TimelineItem';
+import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
+import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import Typography from '@mui/material/Typography';
+import * as React from 'react';
+import ReactDOM from 'react-dom';
 
-const SCRIPT = document.currentScript
-const SCRIPT_ID = SCRIPT.getAttribute('id')
-const TEMPLATE = window.TEMPLATES[SCRIPT_ID]
+const SCRIPT = document.currentScript;
+const SCRIPT_ID = SCRIPT.getAttribute('id');
+const TEMPLATE = document.querySelector(`[script-id="${SCRIPT_ID}"]`);
 
 function CustomizedTimeline() {
   return (
@@ -27,8 +27,7 @@ function CustomizedTimeline() {
         </TimelineOppositeContent>
         <TimelineSeparator>
           <TimelineConnector />
-          <TimelineDot>
-          </TimelineDot>
+          <TimelineDot></TimelineDot>
           <TimelineConnector />
         </TimelineSeparator>
         <TimelineContent sx={{ py: '12px', px: 2 }}>
@@ -48,8 +47,7 @@ function CustomizedTimeline() {
         </TimelineOppositeContent>
         <TimelineSeparator>
           <TimelineConnector />
-          <TimelineDot color="primary">
-          </TimelineDot>
+          <TimelineDot color="primary"></TimelineDot>
           <TimelineConnector />
         </TimelineSeparator>
         <TimelineContent sx={{ py: '12px', px: 2 }}>
@@ -62,8 +60,7 @@ function CustomizedTimeline() {
       <TimelineItem>
         <TimelineSeparator>
           <TimelineConnector />
-          <TimelineDot color="primary" variant="outlined">
-          </TimelineDot>
+          <TimelineDot color="primary" variant="outlined"></TimelineDot>
           <TimelineConnector sx={{ bgcolor: 'secondary.main' }} />
         </TimelineSeparator>
         <TimelineContent sx={{ py: '12px', px: 2 }}>
@@ -76,8 +73,7 @@ function CustomizedTimeline() {
       <TimelineItem>
         <TimelineSeparator>
           <TimelineConnector sx={{ bgcolor: 'secondary.main' }} />
-          <TimelineDot color="secondary">
-          </TimelineDot>
+          <TimelineDot color="secondary"></TimelineDot>
           <TimelineConnector />
         </TimelineSeparator>
         <TimelineContent sx={{ py: '12px', px: 2 }}>
