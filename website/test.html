@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html lang="ru" class="js-enabled nivo-lightbox-notouch">
 <!-- Mirrored from ruvenpelka.com/demos/desmond-resume/light/ by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 27 Jan 2021 08:11:32 GMT -->
 
 <head>
@@ -62,10 +63,10 @@
         });
     </script>
     <noscript>
-        <div>
-            <img loading="lazy" src="https://mc.yandex.ru/watch/72040075" style="position: absolute; left: -9999px"
-                alt="" />
-        </div>
+        &lt;div&gt;
+        &lt;img loading="lazy" src="https://mc.yandex.ru/watch/72040075" style="position: absolute; left: -9999px"
+        alt=""/&gt;
+        &lt;/div&gt;
     </noscript>
     <!-- /Yandex.Metrika counter -->
     <link
@@ -94,14 +95,15 @@
     <script src="assets/js/scrollreveal.min.js"></script>
     <!-- Main JS -->
     <script src="assets/js/main.js"></script>
-    <script src="/plugins/vendors.js" defer="true"></script>
+    <script src="plugins/vendors.js" defer="true"></script>
+    <script src="plugins/MaterialUI/TextField.js" defer="true" id="076aa948-f9f0-4c94-9370-7dc117221b0a"></script>
 </head>
 
 <body>
-    <div class="c-preloader js-preloader">
+    <div class="c-preloader js-preloader" style="opacity: 1; position: relative;">
         <div class="c-preloader__spinner t-preloader__spinner" style="position: relative;"></div>
     </div>
-    <div class="c-main-container js-main-container" style="position: relative; display: block;">
+    <div class="c-main-container js-main-container" style="position: relative;">
         <!-- ################################ -->
         <!-- ############ HEADER ############ -->
         <!-- ################################ -->
@@ -115,12 +117,10 @@
                             style="position: relative;">
                             <div class="c-header__inner-header" style="position: relative;">
                                 <div class="c-header__avatar" style="position: relative;">
-                                    <div class="a-header c-avatar in-view"
-                                        style="position: relative;; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1s ease 0.1s, opacity 1s ease 0.1s; transition: transform 1s ease 0.1s, opacity 1s ease 0.1s; "
-                                        data-sr-id="2">
+                                    <div class="a-header c-avatar" style="position: relative;">
                                         <img loading="lazy" class="c-avatar__img dense-image dense-loading"
                                             src="assets/images/header/avatar.png" alt="Амир Мусаев"
-                                            style="position: relative;">
+                                            style="position: relative; left: -248px; top: 69.5px;">
                                     </div>
                                 </div>
                             </div>
@@ -128,75 +128,55 @@
                         <div class="o-section__content c-header__content t-section__content"
                             style="position: relative;">
                             <div class="c-header__inner-content" style="position: relative;">
-                                <div class="c-header__top" style="position: relative;">
+                                <div class="c-header__top" style="position: relative; left: -55px; top: 0.5px;">
                                     <div class="c-header__brand" style="position: relative;">
                                         <div class="c-brand" style="position: relative;">
                                             <h1 class="c-brand__title t-title" style="position: relative;"> <span
                                                     class="c-brand__sizer" style="position: relative;"> <strong
-                                                        class="a-header c-brand__first-word t-title__first-word in-view"
-                                                        style="position: relative;; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1s ease 0.1s, opacity 1s ease 0.1s; transition: transform 1s ease 0.1s, opacity 1s ease 0.1s; "
-                                                        data-sr-id="3">Amir</strong> <strong
-                                                        class="a-header c-brand__second-word t-title__second-word in-view"
-                                                        style="position: relative;; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1s ease 0.1s, opacity 1s ease 0.1s; transition: transform 1s ease 0.1s, opacity 1s ease 0.1s; "
-                                                        data-sr-id="4">Musaev</strong> <strong
-                                                        class="a-header c-brand__sub-title t-sub-title c-brand__sizer in-view"
-                                                        style="position: relative;; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1s ease 0.1s, opacity 1s ease 0.1s; transition: transform 1s ease 0.1s, opacity 1s ease 0.1s; "
-                                                        data-sr-id="5">
+                                                        class="a-header c-brand__first-word t-title__first-word"
+                                                        style="position: relative; left: 143px; top: -39px;">Amir</strong>
+                                                    <strong class="a-header c-brand__second-word t-title__second-word"
+                                                        style="position: relative; left: -14.5px; top: 6px;">Musaev</strong>
+                                                    <strong
+                                                        class="a-header c-brand__sub-title t-sub-title c-brand__sizer"
+                                                        style="position: relative; left: 158.5px; top: 3px;">
                                                         Web Developer &amp; Frontend Expert </strong> </span> </h1>
                                         </div>
                                     </div>
-                                    <ul class="c-header__social-buttons c-social-buttons" style="position: relative;">
-                                        <li class="a-header in-view"
-                                            style="position: relative;; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1s ease 0.1s, opacity 1s ease 0.1s; transition: transform 1s ease 0.1s, opacity 1s ease 0.1s; "
-                                            data-sr-id="6">
+                                    <ul class="c-header__social-buttons c-social-buttons"
+                                        style="position: relative; left: -10.5px; top: 16px;">
+                                        <li class="a-header" style="position: relative;">
                                             <a href="https://vk.com/musaevonline" target="_blank"
                                                 class="c-social-button t-social-button" style="position: relative;"> <i
-                                                    class="fab fa-lg fa-vk in-view" style="position: relative;"></i>
-                                            </a>
+                                                    class="fab fa-lg fa-vk" style="position: relative;"></i> </a>
                                         </li>
-                                        <li class="a-header in-view"
-                                            style="position: relative;; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1s ease 0.1s, opacity 1s ease 0.1s; transition: transform 1s ease 0.1s, opacity 1s ease 0.1s; "
-                                            data-sr-id="7">
+                                        <li class="a-header" style="position: relative;">
                                             <a href="https://t.me/gc9515" target="_blank"
                                                 class="c-social-button t-social-button" style="position: relative;"> <i
-                                                    class="fab fa-lg fa-telegram in-view"
-                                                    style="position: relative;"></i> </a>
+                                                    class="fab fa-lg fa-telegram" style="position: relative;"></i> </a>
                                         </li>
-                                        <li class="a-header in-view"
-                                            style="position: relative;; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1s ease 0.1s, opacity 1s ease 0.1s; transition: transform 1s ease 0.1s, opacity 1s ease 0.1s; "
-                                            data-sr-id="8">
+                                        <li class="a-header" style="position: relative;">
                                             <a href="https://wa.me/+79322495531" target="_blank"
                                                 class="c-social-button t-social-button" style="position: relative;"> <i
-                                                    class="fab fa-lg fa-whatsapp in-view"
-                                                    style="position: relative;"></i> </a>
+                                                    class="fab fa-lg fa-whatsapp" style="position: relative;"></i> </a>
                                         </li>
-                                        <li class="a-header in-view"
-                                            style="position: relative;; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1s ease 0.1s, opacity 1s ease 0.1s; transition: transform 1s ease 0.1s, opacity 1s ease 0.1s; "
-                                            data-sr-id="9">
+                                        <li class="a-header" style="position: relative;">
                                             <a href="https://github.com/musaevonline" target="_blank"
                                                 class="c-social-button t-social-button" style="position: relative;"> <i
-                                                    class="fab fa-lg fa-github in-view" style="position: relative;"></i>
-                                            </a>
+                                                    class="fab fa-lg fa-github" style="position: relative;"></i> </a>
                                         </li>
-                                        <li class="a-header in-view"
-                                            style="position: relative;; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1s ease 0.1s, opacity 1s ease 0.1s; transition: transform 1s ease 0.1s, opacity 1s ease 0.1s; "
-                                            data-sr-id="10">
+                                        <li class="a-header" style="position: relative;">
                                             <a href="https://www.linkedin.com/in/musaevonline" target="_blank"
                                                 class="c-social-button t-social-button" style="position: relative;"> <i
-                                                    class="fab fa-lg fa-linkedin in-view"
-                                                    style="position: relative;"></i> </a>
+                                                    class="fab fa-lg fa-linkedin" style="position: relative;"></i> </a>
                                         </li>
                                     </ul>
                                 </div>
                                 <div class="c-header__contact" style="position: relative;">
-                                    <hr class="a-header c-header__contact-divider in-view"
-                                        style="position: relative;; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1s ease 0.1s, opacity 1s ease 0.1s; transition: transform 1s ease 0.1s, opacity 1s ease 0.1s; "
-                                        data-sr-id="11">
+                                    <hr class="a-header c-header__contact-divider" style="position: relative;">
                                     <div class="o-grid">
                                         <div class="o-grid__col-md-3 o-grid__col-sm-6" style="position: relative;">
-                                            <div class="a-header o-content in-view"
-                                                style="position: relative;; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1s ease 0.1s, opacity 1s ease 0.1s; transition: transform 1s ease 0.1s, opacity 1s ease 0.1s; "
-                                                data-sr-id="12">
+                                            <div class="a-header o-content" style="position: relative;">
                                                 <div class="o-content__body" style="position: relative;">
                                                     <h4 style="position: relative;">Place of residence</h4>
                                                     <address style="position: relative;">Moscow</address>
@@ -204,9 +184,7 @@
                                             </div>
                                         </div>
                                         <div class="o-grid__col-md-3 o-grid__col-sm-6" style="position: relative;">
-                                            <div class="a-header o-content in-view"
-                                                style="position: relative;; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1s ease 0.1s, opacity 1s ease 0.1s; transition: transform 1s ease 0.1s, opacity 1s ease 0.1s; "
-                                                data-sr-id="13">
+                                            <div class="a-header o-content" style="position: relative;">
                                                 <div class="o-content__body" style="position: relative;">
                                                     <a href="https://www.mirea.ru/" target="_blank"
                                                         class="t-link-container" style="position: relative;">
@@ -220,9 +198,7 @@
                                             </div>
                                         </div>
                                         <div class="o-grid__col-md-3 o-grid__col-sm-6" style="position: relative;">
-                                            <div class="a-header o-content in-view"
-                                                style="position: relative;; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1s ease 0.1s, opacity 1s ease 0.1s; transition: transform 1s ease 0.1s, opacity 1s ease 0.1s; "
-                                                data-sr-id="14">
+                                            <div class="a-header o-content" style="position: relative;">
                                                 <div class="o-content__body" style="position: relative;">
                                                     <a href="tel:+7 (932) 249 55 31" class="t-link-container"
                                                         style="position: relative;">
@@ -236,9 +212,7 @@
                                             </div>
                                         </div>
                                         <div class="o-grid__col-md-3 o-grid__col-sm-6" style="position: relative;">
-                                            <div class="a-header o-content in-view"
-                                                style="position: relative;; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1s ease 0.1s, opacity 1s ease 0.1s; transition: transform 1s ease 0.1s, opacity 1s ease 0.1s; "
-                                                data-sr-id="15">
+                                            <div class="a-header o-content" style="position: relative;">
                                                 <div class="o-content__body" style="position: relative;">
                                                     <a href="mailto:amir@musaev.online" class="t-link-container"
                                                         style="position: relative;">
@@ -1028,9 +1002,7 @@
                                     </div>
                                 </div>
                                 <div class="o-grid__col-md-3 o-grid__col-sm-6" style="position: relative;">
-                                    <div class="a-header o-content"
-                                        style="position: relative;; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1s ease 0.1s, opacity 1s ease 0.1s; transition: transform 1s ease 0.1s, opacity 1s ease 0.1s; "
-                                        data-sr-id="16">
+                                    <div class="a-header o-content" style="position: relative;">
                                         <div class="o-content__body" style="position: relative;">
                                             <a href="tel:+7 (932) 249 55 31" class="t-link-container"
                                                 style="position: relative;">
@@ -1097,4 +1069,9 @@
     </div>
 
 
+    <div style="width: 300px; height: 300px; border: 1px solid red; position: absolute; left: 659px; top: 224px;"></div>
+    <div style="position: absolute; left: 201px; top: 408px;">Custom Text</div>
+    <div style="position: absolute; left: 357.5px; top: 113px;" script-id="076aa948-f9f0-4c94-9370-7dc117221b0a"></div>
 </body>
+
+</html>

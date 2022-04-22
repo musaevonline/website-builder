@@ -5,35 +5,23 @@ import { html_beautify as htmlBeautify } from 'js-beautify';
 import React, { MouseEventHandler } from 'react';
 
 interface ISaveButtonProps extends FabProps {
-  getDocument: any;
+  domMirror: Document;
 }
 
 export const SaveButton: React.FC<ISaveButtonProps> = (props) => {
-  const { getDocument, ...rest } = props;
+  const { domMirror, ...rest } = props;
   const onSave: MouseEventHandler = () => {
-    const parser = getDocument().createElement('html');
+    const domMirrorClone = domMirror.cloneNode(true) as Document;
 
-    parser.innerHTML = getDocument().documentElement.outerHTML;
-    parser
-      .querySelectorAll(':not([exportable])')
-      .forEach((el: any) => el.remove());
-    parser
-      .querySelectorAll('[exportable]')
-      .forEach((el: any) => el.removeAttribute('exportable'));
-    parser
-      .querySelectorAll('[editable]')
-      .forEach((el: any) => el.removeAttribute('editable'));
-    parser
-      .querySelectorAll('[contenteditable]')
-      .forEach((el: any) => el.removeAttribute('contenteditable'));
-    parser
-      .querySelectorAll('.selected')
-      .forEach((el: any) => el.classList.remove('selected'));
-    parser
-      .querySelectorAll('.hovered')
-      .forEach((el: any) => el.classList.remove('hovered'));
+    domMirrorClone
+      .querySelectorAll('[uuid], [editable], [contenteditable]')
+      .forEach((el: any) => {
+        el.removeAttribute('uuid');
+        el.removeAttribute('editable');
+        el.removeAttribute('contenteditable');
+      });
 
-    const exportedCode = `<!DOCTYPE html>${parser.innerHTML}`;
+    const exportedCode = `<!DOCTYPE html>${domMirrorClone.documentElement.outerHTML}`;
 
     const html = htmlBeautify(exportedCode, {
       wrap_line_length: 120,

@@ -18,7 +18,6 @@ const NestedMenuItem2: any = NestedMenuItem;
 declare global {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   interface Window {
-    TEMPLATES: any;
     STORE: any;
   }
 }
@@ -28,13 +27,23 @@ export const Editor = () => {
   const selected = useRef<HTMLElement | null>(null);
   const hovered = useRef<HTMLElement | null>(null);
   const draggable = useRef<HTMLElement | null>(null);
+  const counter = useRef(0);
+  const domMirror = useRef<Document | null>(null);
   const [contextMenu, setContextMenu] = useState<any>({ current: null });
   const [plugins, setPlugins] = useState<any[]>([]);
 
   const iframe = useRef<any>();
   const getDocument = () => iframe?.current?.contentDocument;
   const getWindow = () => iframe?.current?.contentWindow;
+  const getMirror = (element: HTMLElement) => {
+    if (!domMirror.current) {
+      return null;
+    }
 
+    return domMirror.current.querySelector(
+      `[uuid="${element.getAttribute('uuid')}"]`
+    ) as HTMLElement;
+  };
   const handleContextMenu = (event: any) => {
     event.preventDefault();
     setContextMenu({
@@ -54,15 +63,8 @@ export const Editor = () => {
       return;
     }
     selected.current.style[name] = value;
-    const scriptID = selected.current.getAttribute('script-id');
+    getMirror(selected.current)!.style[name] = value;
 
-    if (scriptID) {
-      const script = getDocument()?.getElementById(scriptID);
-
-      if (script) {
-        script.style[name] = value;
-      }
-    }
     forceRender();
 
     return !!getComputedStyle(selected.current)[name];
@@ -128,6 +130,8 @@ export const Editor = () => {
 
         draggable.current.style.left = cx + movementX / 2 + 'px';
         draggable.current.style.top = cy + movementY / 2 + 'px';
+        getMirror(draggable.current)!.style.left = cx + movementX / 2 + 'px';
+        getMirror(draggable.current)!.style.top = cy + movementY / 2 + 'px';
       }
 
       const firstEditableElement = e.path.find(
@@ -159,13 +163,6 @@ export const Editor = () => {
       getDocument().head.appendChild(vendors);
 
       getDocument()
-        .querySelectorAll('*')
-        .forEach(function (node: any) {
-          node.setAttribute('editable', 'true');
-          node.setAttribute('exportable', 'true');
-        });
-
-      getDocument()
         .body.querySelectorAll('*')
         .forEach((el: HTMLElement) => {
           const elStyles = getWindow().getComputedStyle(el);
@@ -173,6 +170,21 @@ export const Editor = () => {
           if (elStyles.position === 'static') {
             el.style.position = 'relative';
           }
+        });
+
+      getDocument()
+        .querySelectorAll('*')
+        .forEach(function (node: HTMLElement) {
+          node.setAttribute('uuid', counter.current++ + '');
+        });
+
+      domMirror.current = getDocument().cloneNode(true);
+
+      getDocument()
+        .querySelectorAll('*')
+        .forEach(function (node: HTMLElement) {
+          node.setAttribute('editable', 'true');
+          node.setAttribute('contenteditable', 'true');
         });
 
       const styleElement = getDocument().createElement('style');
@@ -207,18 +219,28 @@ export const Editor = () => {
     if (templateSrc) {
       const html = await fetch(templateSrc).then((res) => res.text());
       const { mouseX, mouseY, parentNode } = contextMenu.current;
-      const parser = new DOMParser();
+      const IframeDomParser = getWindow().DOMParser;
+      const parser = new IframeDomParser();
 
       const rootNode = parser
         .parseFromString(html, 'text/html')
         .getRootNode() as Document;
       const root = rootNode.body.firstElementChild as HTMLElement;
 
+      root.setAttribute('uuid', counter.current++ + '');
       root.setAttribute('editable', 'true');
+      root.setAttribute('contenteditable', 'true');
+
+      root.querySelectorAll<HTMLElement>('*').forEach((node) => {
+        node.setAttribute('uuid', counter.current++ + '');
+        node.setAttribute('editable', 'true');
+        node.setAttribute('contenteditable', 'true');
+      });
 
       if (parentNode) {
         root.style.position = 'relative';
         parentNode.appendChild(root);
+        getMirror(parentNode)?.appendChild(root.cloneNode(true));
       } else {
         const x = mouseX - iframe.current?.offsetLeft;
         const y = mouseY - iframe.current?.offsetTop + getWindow().scrollY;
@@ -227,6 +249,7 @@ export const Editor = () => {
         root.style.left = x + 'px';
         root.style.top = y + 'px';
         getDocument().body.appendChild(root);
+        getMirror(getDocument().body)?.appendChild(root.cloneNode(true));
       }
 
       template = root;
@@ -238,10 +261,14 @@ export const Editor = () => {
       el.setAttribute('src', scriptSrc);
       el.setAttribute('defer', 'true');
       el.setAttribute('id', id);
-      el.setAttribute('exportable', 'true');
-      template?.setAttribute('script-id', id);
-      getWindow().TEMPLATES[id] = template;
+      el.setAttribute('uuid', counter.current++ + '');
+
+      if (template) {
+        template.setAttribute('script-id', id);
+        getMirror(template)?.setAttribute('script-id', id);
+      }
       getDocument().head.appendChild(el);
+      getMirror(getDocument().head)?.appendChild(el.cloneNode(true));
     }
     setContextMenu({ current: null });
   };
@@ -387,10 +414,12 @@ export const Editor = () => {
           ))}
         </NestedMenuItem2>
       </Menu>
-      <SaveButton
-        sx={{ position: 'fixed', bottom: 16, right: 16 }}
-        getDocument={getDocument}
-      />
+      {domMirror.current && (
+        <SaveButton
+          sx={{ position: 'fixed', bottom: 16, right: 16 }}
+          domMirror={domMirror.current}
+        />
+      )}
     </Grid>
   );
 };

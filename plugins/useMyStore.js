@@ -1,6 +1,9 @@
 import { useEffect, useReducer } from "react";
 
 export const useMyStore = (id, initialState) => {
+    if (!window.STORE) {
+        return initialState
+    }
     const [, forceRender] = useReducer((s) => s + 1, 0)
 
     useEffect(() => {
