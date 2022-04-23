@@ -21,6 +21,7 @@ export const SaveButton: React.FC<ISaveButtonProps> = (props) => {
 
     const html = htmlBeautify(exportedCode, {
       wrap_line_length: 120,
+      max_preserve_newlines: 0,
     });
 
     fetch('http://localhost:3000/editor/save', {
