@@ -147,6 +147,7 @@ export const Editor = () => {
       }
     };
 
+    /** IFRAME LOADED HANDLER */
     getWindow().addEventListener('DOMContentLoaded', (event) => {
       const target = event.target as Document;
 
@@ -198,9 +199,6 @@ export const Editor = () => {
       target.head.appendChild(styleElement);
       forceRender();
     });
-
-    /** IFRAME LOADED HANDLER */
-    iframe.current.onload = () => {};
 
     fetch('/editor/plugins.json')
       .then((res) => res.json())
