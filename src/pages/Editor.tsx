@@ -25,7 +25,7 @@ export const Editor = () => {
   const hovered = useRef<HTMLElement | null>(null);
   const draggable = useRef<HTMLElement | null>(null);
   const counter = useRef(0);
-  const domMirror = useRef<Document | null>(null);
+  const virtualDOM = useRef<Document | null>(null);
   const [contextMenu, setContextMenu] = useState<any>({ current: null });
   const [plugins, setPlugins] = useState<any[]>([]);
 
@@ -33,11 +33,11 @@ export const Editor = () => {
   const getDocument = () => iframe?.current?.contentDocument;
   const getWindow = (): IWindow => iframe?.current?.contentWindow;
   const getMirror = (element: HTMLElement) => {
-    if (!domMirror.current) {
+    if (!virtualDOM.current) {
       return null;
     }
 
-    return domMirror.current.querySelector(
+    return virtualDOM.current.querySelector(
       `[uuid="${element.getAttribute('uuid')}"]`
     ) as HTMLElement;
   };
@@ -178,7 +178,7 @@ export const Editor = () => {
         }
       });
 
-      domMirror.current = target.cloneNode(true) as Document;
+      virtualDOM.current = target.cloneNode(true) as Document;
 
       target.querySelectorAll('*').forEach((node) => {
         node.setAttribute('editable', 'true');
@@ -411,10 +411,10 @@ export const Editor = () => {
           ))}
         </NestedMenuItem2>
       </Menu>
-      {domMirror.current && (
+      {virtualDOM.current && (
         <SaveButton
           sx={{ position: 'fixed', bottom: 16, right: 16 }}
-          domMirror={domMirror.current}
+          virtualDOM={virtualDOM.current}
         />
       )}
     </Grid>

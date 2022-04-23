@@ -5,19 +5,19 @@ import { html_beautify as htmlBeautify } from 'js-beautify';
 import React, { MouseEventHandler } from 'react';
 
 interface ISaveButtonProps extends FabProps {
-  domMirror: Document;
+  virtualDOM: Document;
 }
 
 export const SaveButton: React.FC<ISaveButtonProps> = (props) => {
-  const { domMirror, ...rest } = props;
+  const { virtualDOM, ...rest } = props;
   const onSave: MouseEventHandler = () => {
-    const domMirrorClone = domMirror.cloneNode(true) as Document;
+    const virtualDOMClone = virtualDOM.cloneNode(true) as Document;
 
-    domMirrorClone.querySelectorAll('[uuid]').forEach((el: any) => {
+    virtualDOMClone.querySelectorAll('[uuid]').forEach((el: any) => {
       el.removeAttribute('uuid');
     });
 
-    const exportedCode = `<!DOCTYPE html>${domMirrorClone.documentElement.outerHTML}`;
+    const exportedCode = `<!DOCTYPE html>${virtualDOMClone.documentElement.outerHTML}`;
 
     const html = htmlBeautify(exportedCode, {
       wrap_line_length: 120,
