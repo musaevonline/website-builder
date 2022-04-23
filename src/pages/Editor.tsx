@@ -1,4 +1,5 @@
 import { Grid, Box, Menu, MenuItem, Typography, Divider } from '@mui/material';
+import getXPath from 'get-xpath';
 import { useEffect, useRef, useState } from 'react';
 import React from 'react';
 import { useParams } from 'react-router-dom';
@@ -147,15 +148,36 @@ export const Editor = () => {
       }
     };
 
+    const pageDocumentPromise = fetch('/test.html')
+      .then((res) => res.text())
+      .then((page) => {
+        const parser = new DOMParser();
+
+        return parser.parseFromString(page, 'text/html');
+      });
+
     /** IFRAME LOADED HANDLER */
-    getWindow().addEventListener('DOMContentLoaded', (event) => {
+    getWindow().addEventListener('DOMContentLoaded', async (event) => {
       const target = event.target as Document;
 
       getWindow().STORE = {};
       target.body.oncontextmenu = handleContextMenu;
 
-      target.querySelectorAll('*').forEach((node) => {
-        node.setAttribute('uuid', counter.current++ + '');
+      virtualDOM.current = await pageDocumentPromise;
+
+      virtualDOM.current.querySelectorAll('*').forEach((node) => {
+        const xPath = getXPath(node);
+        const uuid = String(counter.current++);
+        const targetNode = target.evaluate(
+          xPath,
+          target,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          null
+        ).singleNodeValue as HTMLElement;
+
+        node.setAttribute('uuid', uuid);
+        targetNode?.setAttribute('uuid', uuid);
       });
 
       const vendorsScript = target.head.querySelector(
@@ -168,6 +190,7 @@ export const Editor = () => {
         vendors.setAttribute('src', '/plugins/vendors.js');
         vendors.setAttribute('defer', 'true');
         target.head.appendChild(vendors);
+        getMirror(target.head)?.appendChild(vendors.cloneNode(true));
       }
 
       target.body.querySelectorAll<HTMLElement>('*').forEach((el) => {
@@ -175,10 +198,12 @@ export const Editor = () => {
 
         if (elStyles.position === 'static') {
           el.style.position = 'relative';
+
+          if (getMirror(el)) {
+            getMirror(el)!.style.position = 'relative';
+          }
         }
       });
-
-      virtualDOM.current = target.cloneNode(true) as Document;
 
       target.querySelectorAll('*').forEach((node) => {
         node.setAttribute('editable', 'true');
