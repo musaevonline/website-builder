@@ -13,13 +13,9 @@ export const SaveButton: React.FC<ISaveButtonProps> = (props) => {
   const onSave: MouseEventHandler = () => {
     const domMirrorClone = domMirror.cloneNode(true) as Document;
 
-    domMirrorClone
-      .querySelectorAll('[uuid], [editable], [contenteditable]')
-      .forEach((el: any) => {
-        el.removeAttribute('uuid');
-        el.removeAttribute('editable');
-        el.removeAttribute('contenteditable');
-      });
+    domMirrorClone.querySelectorAll('[uuid]').forEach((el: any) => {
+      el.removeAttribute('uuid');
+    });
 
     const exportedCode = `<!DOCTYPE html>${domMirrorClone.documentElement.outerHTML}`;
 

@@ -15,11 +15,8 @@ import '../App.css';
 
 const NestedMenuItem2: any = NestedMenuItem;
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  interface Window {
-    STORE: any;
-  }
+export interface IWindow extends Window {
+  STORE: any;
 }
 
 export const Editor = () => {
@@ -34,7 +31,7 @@ export const Editor = () => {
 
   const iframe = useRef<any>();
   const getDocument = () => iframe?.current?.contentDocument;
-  const getWindow = () => iframe?.current?.contentWindow;
+  const getWindow = (): IWindow => iframe?.current?.contentWindow;
   const getMirror = (element: HTMLElement) => {
     if (!domMirror.current) {
       return null;
@@ -150,44 +147,44 @@ export const Editor = () => {
       }
     };
 
-    /** IFRAME LOADED HANDLER */
-    iframe.current.onload = () => {
-      getWindow().TEMPLATES = {};
+    getWindow().addEventListener('DOMContentLoaded', (event) => {
+      const target = event.target as Document;
+
       getWindow().STORE = {};
-      getDocument().body.oncontextmenu = handleContextMenu;
+      target.body.oncontextmenu = handleContextMenu;
 
-      const vendors = getDocument().createElement('script');
+      target.querySelectorAll('*').forEach((node) => {
+        node.setAttribute('uuid', counter.current++ + '');
+      });
 
-      vendors.setAttribute('src', '/plugins/vendors.js');
-      vendors.setAttribute('defer', 'true');
-      getDocument().head.appendChild(vendors);
+      const vendorsScript = target.head.querySelector(
+        'script[src="/plugins/vendors.js"]'
+      );
 
-      getDocument()
-        .body.querySelectorAll('*')
-        .forEach((el: HTMLElement) => {
-          const elStyles = getWindow().getComputedStyle(el);
+      if (!vendorsScript) {
+        const vendors = target.createElement('script');
 
-          if (elStyles.position === 'static') {
-            el.style.position = 'relative';
-          }
-        });
+        vendors.setAttribute('src', '/plugins/vendors.js');
+        vendors.setAttribute('defer', 'true');
+        target.head.appendChild(vendors);
+      }
 
-      getDocument()
-        .querySelectorAll('*')
-        .forEach(function (node: HTMLElement) {
-          node.setAttribute('uuid', counter.current++ + '');
-        });
+      target.body.querySelectorAll<HTMLElement>('*').forEach((el) => {
+        const elStyles = getWindow().getComputedStyle(el);
 
-      domMirror.current = getDocument().cloneNode(true);
+        if (elStyles.position === 'static') {
+          el.style.position = 'relative';
+        }
+      });
 
-      getDocument()
-        .querySelectorAll('*')
-        .forEach(function (node: HTMLElement) {
-          node.setAttribute('editable', 'true');
-          node.setAttribute('contenteditable', 'true');
-        });
+      domMirror.current = target.cloneNode(true) as Document;
 
-      const styleElement = getDocument().createElement('style');
+      target.querySelectorAll('*').forEach((node) => {
+        node.setAttribute('editable', 'true');
+        node.setAttribute('contenteditable', 'true');
+      });
+
+      const styleElement = target.createElement('style');
 
       styleElement.type = 'text/css';
       styleElement.innerHTML = `
@@ -198,9 +195,12 @@ export const Editor = () => {
           outline: #82c7ff solid 2px !important;
         }
       `;
-      getDocument().head.appendChild(styleElement);
+      target.head.appendChild(styleElement);
       forceRender();
-    };
+    });
+
+    /** IFRAME LOADED HANDLER */
+    iframe.current.onload = () => {};
 
     fetch('/editor/plugins.json')
       .then((res) => res.json())
@@ -219,8 +219,7 @@ export const Editor = () => {
     if (templateSrc) {
       const html = await fetch(templateSrc).then((res) => res.text());
       const { mouseX, mouseY, parentNode } = contextMenu.current;
-      const IframeDomParser = getWindow().DOMParser;
-      const parser = new IframeDomParser();
+      const parser = new DOMParser();
 
       const rootNode = parser
         .parseFromString(html, 'text/html')

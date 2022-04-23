@@ -4,7 +4,7 @@ const express = require('express');
 const glob = require('glob');
 
 const setupServer = (app) => {
-  app.use(express.json());
+  app.use(express.json({ limit: '50MB' }));
   app.use('/', express.static('website'));
 
   app.get('/editor/pages', (req, res) => {
