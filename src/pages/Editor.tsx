@@ -451,6 +451,7 @@ export const Editor = () => {
         <SaveButton
           sx={{ position: 'fixed', bottom: 16, right: 16 }}
           virtualDOM={virtualDOM.current}
+          getWindow={getWindow}
         />
       )}
     </Grid>

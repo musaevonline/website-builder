@@ -4,12 +4,14 @@ import 'highlight.js/styles/github.css';
 import { html_beautify as htmlBeautify } from 'js-beautify';
 import React, { MouseEventHandler } from 'react';
 
+import { IWindow } from '../../pages/Editor';
 interface ISaveButtonProps extends FabProps {
   virtualDOM: Document;
+  getWindow: () => IWindow;
 }
 
 export const SaveButton: React.FC<ISaveButtonProps> = (props) => {
-  const { virtualDOM, ...rest } = props;
+  const { virtualDOM, getWindow, ...rest } = props;
   const onSave: MouseEventHandler = () => {
     const virtualDOMClone = virtualDOM.cloneNode(true) as Document;
 
@@ -17,6 +19,11 @@ export const SaveButton: React.FC<ISaveButtonProps> = (props) => {
       el.removeAttribute('uuid');
     });
 
+    const scriptElement = virtualDOMClone.createElement('script');
+    const currentState = JSON.stringify(getWindow().STORE);
+
+    scriptElement.innerText = `window.STORE = ${currentState}`;
+    virtualDOMClone.head.appendChild(scriptElement);
     const exportedCode = `<!DOCTYPE html>${virtualDOMClone.documentElement.outerHTML}`;
 
     const html = htmlBeautify(exportedCode, {
