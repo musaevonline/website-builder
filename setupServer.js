@@ -16,9 +16,9 @@ const setupServer = (app) => {
   });
 
   app.post('/editor/save', (req, res) => {
-    const { html } = req.body;
+    const { html, page } = req.body;
 
-    fs.writeFileSync('website/test.html', html);
+    fs.writeFileSync(`website/${page}`, html);
 
     return res.status(200).send();
   });

@@ -8,10 +8,11 @@ import { IWindow } from '../../pages/Editor';
 interface ISaveButtonProps extends FabProps {
   virtualDOM: Document;
   getWindow: () => IWindow;
+  page: string;
 }
 
 export const SaveButton: React.FC<ISaveButtonProps> = (props) => {
-  const { virtualDOM, getWindow, ...rest } = props;
+  const { virtualDOM, getWindow, page, ...rest } = props;
   const onSave: MouseEventHandler = () => {
     const virtualDOMClone = virtualDOM.cloneNode(true) as Document;
 
@@ -33,7 +34,7 @@ export const SaveButton: React.FC<ISaveButtonProps> = (props) => {
 
     fetch('http://localhost:3000/editor/save', {
       method: 'POST',
-      body: JSON.stringify({ html }),
+      body: JSON.stringify({ html, page }),
       headers: {
         'Content-Type': 'application/json',
       },

@@ -22,6 +22,7 @@ export interface IWindow extends Window {
 export const EMPTY_ELEMENT = document.createElement('div');
 
 export const Editor = () => {
+  const forceRender = useForceRender();
   const { page } = useParams();
   const selected = useRef<HTMLElement | null>(null);
   const hovered = useRef<HTMLElement | null>(null);
@@ -55,7 +56,6 @@ export const Editor = () => {
     });
   };
 
-  const forceRender = useForceRender();
   const addStyleToSelected = ({ name, value }: any) => {
     if (
       !selected.current ||
@@ -151,12 +151,20 @@ export const Editor = () => {
       }
     };
 
-    const pageDocumentPromise = fetch('/test.html')
+    if (!page) {
+      return;
+    }
+
+    const pageDocumentPromise = fetch(`/${page}`)
       .then((res) => res.text())
       .then((page) => {
-        const parser = new DOMParser();
+        const htmlElement = getDocument().createElement('html');
+        const document = getDocument().implementation.createHTMLDocument();
 
-        return parser.parseFromString(page, 'text/html');
+        htmlElement.innerHTML = page;
+        document.replaceChild(htmlElement, document.documentElement);
+
+        return document as Document;
       });
 
     /** IFRAME LOADED HANDLER */
@@ -167,7 +175,6 @@ export const Editor = () => {
       target.body.oncontextmenu = handleContextMenu;
 
       virtualDOM.current = await pageDocumentPromise;
-
       virtualDOM.current.querySelectorAll('*').forEach((node) => {
         const xPath = getXPath(node);
         const targetNode = target.evaluate(
@@ -305,6 +312,10 @@ export const Editor = () => {
     }
     setContextMenu({ current: null });
   };
+
+  if (!page) {
+    return null;
+  }
 
   const selectedStyles =
     selected.current && selected.current.getAttribute('style');
@@ -452,6 +463,7 @@ export const Editor = () => {
           sx={{ position: 'fixed', bottom: 16, right: 16 }}
           virtualDOM={virtualDOM.current}
           getWindow={getWindow}
+          page={page}
         />
       )}
     </Grid>
