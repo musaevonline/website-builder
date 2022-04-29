@@ -19,6 +19,7 @@ const NestedMenuItem2: any = NestedMenuItem;
 export interface IWindow extends Window {
   STORE: any;
 }
+export const EMPTY_ELEMENT = document.createElement('div');
 
 export const Editor = () => {
   const { page } = useParams();
@@ -35,12 +36,14 @@ export const Editor = () => {
   const getWindow = (): IWindow => iframe?.current?.contentWindow;
   const getMirror = (element: HTMLElement) => {
     if (!virtualDOM.current) {
-      return null;
+      return EMPTY_ELEMENT;
     }
 
-    return virtualDOM.current.querySelector(
+    const mirror = virtualDOM.current.querySelector(
       `[uuid="${element.getAttribute('uuid')}"]`
     ) as HTMLElement;
+
+    return mirror || EMPTY_ELEMENT;
   };
   const handleContextMenu = (event: any) => {
     event.preventDefault();
@@ -61,7 +64,7 @@ export const Editor = () => {
       return;
     }
     selected.current.style[name] = value;
-    getMirror(selected.current)!.style[name] = value;
+    getMirror(selected.current).style[name] = value;
 
     forceRender();
 
@@ -128,8 +131,8 @@ export const Editor = () => {
 
         draggable.current.style.left = cx + movementX / 2 + 'px';
         draggable.current.style.top = cy + movementY / 2 + 'px';
-        getMirror(draggable.current)!.style.left = cx + movementX / 2 + 'px';
-        getMirror(draggable.current)!.style.top = cy + movementY / 2 + 'px';
+        getMirror(draggable.current).style.left = cx + movementX / 2 + 'px';
+        getMirror(draggable.current).style.top = cy + movementY / 2 + 'px';
       }
 
       const firstEditableElement = e.path.find(
@@ -167,7 +170,6 @@ export const Editor = () => {
 
       virtualDOM.current.querySelectorAll('*').forEach((node) => {
         const xPath = getXPath(node);
-        const uuid = String(counter.current++);
         const targetNode = target.evaluate(
           xPath,
           target,
@@ -176,8 +178,34 @@ export const Editor = () => {
           null
         ).singleNodeValue as HTMLElement;
 
+        const uuid = String(counter.current++);
+
         node.setAttribute('uuid', uuid);
         targetNode?.setAttribute('uuid', uuid);
+      });
+      virtualDOM.current.body.querySelectorAll('*').forEach((node) => {
+        const targetNode = target.querySelector(
+          `[uuid="${node.getAttribute('uuid')}"]`
+        ) as HTMLElement;
+
+        if (!targetNode) {
+          return;
+        }
+        targetNode.setAttribute('editable', 'true');
+
+        if (targetNode.firstChild?.nodeName === '#text') {
+          targetNode.setAttribute('contenteditable', 'true');
+        }
+
+        const elStyles = getWindow().getComputedStyle(targetNode);
+
+        if (elStyles.position === 'static') {
+          targetNode.style.position = 'relative';
+
+          if (getMirror(targetNode)) {
+            getMirror(targetNode).style.position = 'relative';
+          }
+        }
       });
 
       const vendorsScript = target.head.querySelector(
@@ -192,23 +220,6 @@ export const Editor = () => {
         target.head.appendChild(vendors);
         getMirror(target.head)?.appendChild(vendors.cloneNode(true));
       }
-
-      target.body.querySelectorAll<HTMLElement>('*').forEach((el) => {
-        const elStyles = getWindow().getComputedStyle(el);
-
-        if (elStyles.position === 'static') {
-          el.style.position = 'relative';
-
-          if (getMirror(el)) {
-            getMirror(el)!.style.position = 'relative';
-          }
-        }
-      });
-
-      target.querySelectorAll('*').forEach((node) => {
-        node.setAttribute('editable', 'true');
-        node.setAttribute('contenteditable', 'true');
-      });
 
       const styleElement = target.createElement('style');
 
