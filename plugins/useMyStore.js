@@ -5,9 +5,10 @@ export const useMyStore = (id, initialState) => {
         return initialState
     }
     const [, forceRender] = useReducer((s) => s + 1, 0)
+    const state = window.STORE[id] || initialState;
 
     useEffect(() => {
-        const proxy = new Proxy(initialState, {
+        const proxy = new Proxy(state, {
             set(target, key, value) {
                 target[key] = value;
                 forceRender()
@@ -16,8 +17,6 @@ export const useMyStore = (id, initialState) => {
         })
         window.STORE[id] = proxy;
     }, [])
-
-    const state = window.STORE[id] || initialState;
 
     let resultState = {}
     for (let key in state) {
