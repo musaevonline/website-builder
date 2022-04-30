@@ -69,15 +69,19 @@ export const PropsFields = ({ onSave, props, toggleJSMode }: any) => {
 
   return (
     <Box sx={{ overflowY: 'auto', overflowX: 'hidden' }}>
-      {sortedProps.map(([prop, value]) => (
-        <PropField
-          key={prop[0] === '$' ? prop.slice(1) : prop}
-          prop={prop}
-          value={value}
-          onSave={onSave}
-          toggleJSMode={toggleJSMode}
-        />
-      ))}
+      {sortedProps.map(([prop, value]) => {
+        const key = prop[0] === '$' ? prop.slice(1) : prop;
+
+        return (
+          <PropField
+            key={key + value}
+            prop={prop}
+            value={value}
+            onSave={onSave}
+            toggleJSMode={toggleJSMode}
+          />
+        );
+      })}
     </Box>
   );
 };
