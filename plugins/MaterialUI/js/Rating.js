@@ -1,6 +1,8 @@
-import { Rating as MaterialRating } from '@mui/material';
 import * as React from 'react';
 import ReactDOM from 'react-dom';
+import '../../useIdFix';
+// eslint-disable-next-line import/order
+import { Rating as MaterialRating } from '@mui/material';
 
 import { useMyStore } from '../../useMyStore';
 
