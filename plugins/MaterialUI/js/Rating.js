@@ -1,30 +1,38 @@
-import Box from '@mui/material/Box';
-import Rating from '@mui/material/Rating';
+import { Rating as MaterialRating } from '@mui/material';
 import * as React from 'react';
 import ReactDOM from 'react-dom';
+
+import { useMyStore } from '../../useMyStore';
 
 const SCRIPT = document.currentScript;
 const SCRIPT_ID = SCRIPT.getAttribute('id');
 const TEMPLATE = document.querySelector(`[script-id="${SCRIPT_ID}"]`);
 
-export default function BasicRating() {
-  const [value, setValue] = React.useState(2);
+const INITIAL_STATE = {
+  $classes: undefined,
+  $defaultValue: undefined,
+  $disabled: false,
+  $emptyIcon: undefined,
+  emptyLabelText: 'Empty',
+  $getLabelText: undefined,
+  $highlightSelectedOnly: false,
+  $icon: undefined,
+  $IconContainerComponent: undefined,
+  $max: 5,
+  name: undefined,
+  $onChange: undefined,
+  $onChangeActive: undefined,
+  $precision: 1,
+  $readOnly: false,
+  size: 'medium',
+  $sx: undefined,
+  $value: undefined,
+};
 
-  return (
-    <Box
-      sx={{
-        '& > legend': { mt: 2 },
-      }}
-    >
-      <Rating
-        name="simple-controlled"
-        value={value}
-        onChange={(event, newValue) => {
-          setValue(newValue);
-        }}
-      />
-    </Box>
-  );
-}
+const Rating = () => {
+  const state = useMyStore(SCRIPT_ID, INITIAL_STATE);
 
-ReactDOM.render(<BasicRating />, TEMPLATE);
+  return <MaterialRating {...state} />;
+};
+
+ReactDOM.render(<Rating />, TEMPLATE);
