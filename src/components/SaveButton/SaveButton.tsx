@@ -37,7 +37,7 @@ export const SaveButton: React.FC<ISaveButtonProps> = (props) => {
       max_preserve_newlines: 0,
     });
 
-    fetch('http://localhost:3000/editor/save', {
+    fetch('/editor/save', {
       method: 'POST',
       body: JSON.stringify({ html, page }),
       headers: {
