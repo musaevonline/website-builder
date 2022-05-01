@@ -8,8 +8,8 @@ const app = express();
 
 setupServer(app);
 
-if (fs.existsSync('public')) {
-  app.use('/editor', express.static('public'));
+if (fs.existsSync('editor')) {
+  app.use('/editor', express.static('editor'));
 }
 
 app.listen(3000);

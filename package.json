@@ -113,9 +113,7 @@
   },
   "scripts": {
     "start": "PUBLIC_URL=/editor ESLINT_NO_DEV_ERRORS=true node scripts/start.js",
-    "start:prod": "node start.js",
-    "build:editor": "PUBLIC_URL=/editor BUILD_PATH='build-editor' node scripts/build.js",
-    "build": "npm run build:editor && rm -rf build && mkdir build && cp -R build-assets/* website setupServer.js build && cp -R build-editor build/public",
+    "build": "PUBLIC_URL=/editor BUILD_PATH='build/editor' node scripts/build.js && cp -R build-assets/* website setupServer.js build",
     "plugins": "webpack",
     "test": "node scripts/test.js"
   },
