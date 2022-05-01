@@ -260,26 +260,17 @@ export const Editor = () => {
     if (templateSrc) {
       const html = await fetch(templateSrc).then((res) => res.text());
       const { mouseX, mouseY, parentNode } = contextMenu.current;
-      const parser = new DOMParser();
+      const elementContainer = document.createElement('div');
 
-      const rootNode = parser
-        .parseFromString(html, 'text/html')
-        .getRootNode() as Document;
-      const root = rootNode.body.firstElementChild as HTMLElement;
+      elementContainer.innerHTML = html;
+      const root = elementContainer.firstElementChild as HTMLElement;
 
-      root.setAttribute('uuid', counter.current++ + '');
-      root.setAttribute('editable', 'true');
-      root.setAttribute('contenteditable', 'true');
-
-      root.querySelectorAll<HTMLElement>('*').forEach((node) => {
+      elementContainer.querySelectorAll('*').forEach((node) => {
         node.setAttribute('uuid', counter.current++ + '');
-        node.setAttribute('editable', 'true');
-        node.setAttribute('contenteditable', 'true');
       });
 
       if (parentNode) {
         root.style.position = 'relative';
-        parentNode.appendChild(root);
         getMirror(parentNode)?.appendChild(root.cloneNode(true));
       } else {
         const x = mouseX - iframe.current?.offsetLeft;
@@ -288,8 +279,21 @@ export const Editor = () => {
         root.style.position = 'absolute';
         root.style.left = x + 'px';
         root.style.top = y + 'px';
-        getDocument().body.appendChild(root);
         getMirror(getDocument().body)?.appendChild(root.cloneNode(true));
+      }
+
+      elementContainer.querySelectorAll('*').forEach((node) => {
+        node.setAttribute('editable', 'true');
+
+        if (node.firstChild?.nodeName === '#text') {
+          node.setAttribute('contenteditable', 'true');
+        }
+      });
+
+      if (parentNode) {
+        parentNode.appendChild(root);
+      } else {
+        getDocument().body.appendChild(root);
       }
 
       template = root;
