@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 
 import NestedMenuItem from '../NestedMenuItem';
+import { AttributeFields } from '../components/AttributeFields';
 import { DomTree } from '../components/DomTree';
 import { PropsFields } from '../components/PropsFields';
 import { SaveButton } from '../components/SaveButton';
@@ -409,10 +410,25 @@ export const Editor = () => {
               onRightClick={handleRightClick}
             />
           )}
-          {selected.current && <SettingsTool selected={selected.current} />}
-          <StyleFields styles={styles || []} onAddStyle={addStyleToSelected} />
+          {selected.current && (
+            <>
+              <SettingsTool selected={selected.current} />
+              <Typography fontWeight="bold">Styles</Typography>
+              <StyleFields
+                styles={styles || []}
+                onAddStyle={addStyleToSelected}
+              />
+              <Typography fontWeight="bold">Attributes</Typography>
+              <AttributeFields
+                selected={selected.current}
+                getMirror={getMirror}
+                forceRender={forceRender}
+              />
+            </>
+          )}
           {selectedScriptID && (
             <>
+              <Typography fontWeight="bold">Plugin props</Typography>
               <Typography>ID: {selectedScriptID}</Typography>
               <Divider />
             </>
