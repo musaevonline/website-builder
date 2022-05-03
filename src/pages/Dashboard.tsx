@@ -9,7 +9,7 @@ export const Dashboard = () => {
     fetch('/editor/pages')
       .then((res) => res.json())
       .then((pages) => setPages(pages));
-  });
+  }, []);
 
   return (
     <Box>
