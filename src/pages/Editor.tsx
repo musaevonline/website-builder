@@ -234,10 +234,32 @@ export const Editor = () => {
       styleElement.type = 'text/css';
       styleElement.innerHTML = `
         .hovered {
+          position: relative;
+        }
+        .hovered:after {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
           outline: #82ffff solid 2px !important;
+          z-index: 10000;
+          pointer-events: none
         }
         .selected {
+          position: relative;
+        }
+        .selected:after {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
           outline: #82c7ff solid 2px !important;
+          z-index: 9999;
+          pointer-events: none
         }
       `;
       target.head.appendChild(styleElement);
@@ -283,8 +305,13 @@ export const Editor = () => {
         getMirror(getDocument().body)?.appendChild(root.cloneNode(true));
       }
 
-      elementContainer.querySelectorAll('*').forEach((node) => {
+      elementContainer.querySelectorAll<HTMLElement>('*').forEach((node) => {
         node.setAttribute('editable', 'true');
+
+        if (node !== root) {
+          node.style.position = 'relative';
+          getMirror(node).style.position = 'relative';
+        }
 
         if (node.firstChild?.nodeName === '#text') {
           node.setAttribute('contenteditable', 'true');
