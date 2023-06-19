@@ -78,21 +78,24 @@ export const Editor = () => {
     }
 
     getWindow().onmousedown = (e: any) => {
-      const firstDraggableElement = e.path.find(
-        (el: any) =>
-          el.hasAttribute &&
-          el.hasAttribute('editable') &&
-          el.style &&
-          (el.style.position === 'absolute' || el.style.position === 'relative')
-      );
+      const firstDraggableElement = e
+        .composedPath()
+        ?.find(
+          (el: any) =>
+            el.hasAttribute &&
+            el.hasAttribute('editable') &&
+            el.style &&
+            (el.style.position === 'absolute' ||
+              el.style.position === 'relative')
+        );
 
       if (firstDraggableElement) {
         draggable.current = firstDraggableElement;
       }
 
-      const firstEditableElement = e.path.find(
-        (c: any) => c.hasAttribute && c.hasAttribute('editable')
-      );
+      const firstEditableElement = e
+        .composedPath()
+        ?.find((c: any) => c.hasAttribute && c.hasAttribute('editable'));
 
       if (firstEditableElement) {
         if (selected.current) {
@@ -135,10 +138,9 @@ export const Editor = () => {
         getMirror(draggable.current).style.left = cx + movementX / 2 + 'px';
         getMirror(draggable.current).style.top = cy + movementY / 2 + 'px';
       }
-
-      const firstEditableElement = e.path.find(
-        (c: any) => c.hasAttribute && c.hasAttribute('editable')
-      );
+      const firstEditableElement = e
+        .composedPath()
+        ?.find((c: any) => c.hasAttribute && c.hasAttribute('editable'));
 
       if (firstEditableElement) {
         if (hovered.current) {
