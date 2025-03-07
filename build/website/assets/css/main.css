@@ -1949,7 +1949,6 @@ img[height] {
     }
 
     .o-section__container {
-        z-index: 2;
         position: relative;
         display: -ms-flexbox;
         display: flex;

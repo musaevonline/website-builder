@@ -1,4 +1,7 @@
 {
+	"About": {
+		"template": "/plugins/About/template.html"
+	},
 	"Block": {
 		"template": "/plugins/Block/template.html"
 	},
